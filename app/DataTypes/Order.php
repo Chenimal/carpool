@@ -38,7 +38,7 @@ class Order
         if (empty($input['drop_off_lat_lng']) || empty($input['drop_off_lat_lng'][0]) || empty($input['drop_off_lat_lng'][1])) {
             abort(500, 'Unknown order\'s drop off coordinate');
         }
-        $this->pick_up_lat_lng = $input['drop_off_lat_lng'];
+        $this->drop_off_lat_lng = $input['drop_off_lat_lng'];
 
         // todo: code of saving order into db below
     }

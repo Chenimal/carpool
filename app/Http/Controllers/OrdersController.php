@@ -15,9 +15,15 @@ class OrdersController extends Controller
      */
     public function create()
     {
+        // pickup and delivery time is always end with 0, 15, 30, 45
+        $time_interval = 15 * 60;
+        // pickupTime <= currentTime + 24 hrs
+        $max_pickup_time = 24 * 60 * 60;
+        // deliveryTime - pickupTime <= 6 hrs
+        $max_delivery_time = 6 * 60 * 60;
 
-        $pickup_timestamp   = time() + mt_rand(0, 24 * 60 * 60);
-        $delivery_timestamp = $pickup_timestamp + mt_rand(0, 6 * 60 * 60);
+        $pickup_timestamp   = (floor(time() / $time_interval) + mt_rand(1, $max_pickup_time / $time_interval)) * $time_interval;
+        $delivery_timestamp = $pickup_timestamp + mt_rand(1, $max_delivery_time / $time_interval) * $time_interval;
         $input              = [
             // service_type could be A, B, or C
             'service_type'     => chr(ord('A') + mt_rand(0, 2)),
