@@ -19,3 +19,9 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Lumen framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+
+## Assumptions
+
+1. For each order deliveryTime > pickupTime >= currentTime
+2. For each order pickupTime <= currentTime + 24 hrs
+3. For each order deliveryTime - pickupTime <= 6 hrs
