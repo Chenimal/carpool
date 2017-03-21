@@ -13,6 +13,10 @@ class Order
     private $pick_up_lat_lng;
     private $drop_off_lat_lng;
 
+    /**
+     * create new order
+     * @param  array
+     */
     public function __construct($input = [])
     {
         // validation
@@ -43,6 +47,11 @@ class Order
         // todo: code of saving order into db below
     }
 
+    /**
+     * get info for display on the map
+     * @param  none
+     * @return array
+     */
     public function getInfo()
     {
         return [
@@ -53,4 +62,26 @@ class Order
             'drop_off_lat_lng' => $this->drop_off_lat_lng,
         ];
     }
+
+    /**
+     * search order by order_id
+     * @param  int order_id
+     * @return self
+     */
+    public static function searchByOrderId($order_id)
+    {
+        // todo: db related
+    }
+
+    /**
+     * remove order
+     * @param  int order_id
+     * @return  boolean
+     */
+    public function takeOrder($order_id)
+    {
+        // todo: db related
+    }
+
+
 }

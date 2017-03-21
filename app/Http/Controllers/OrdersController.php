@@ -36,4 +36,14 @@ class OrdersController extends Controller
 
         return response()->json($order->getInfo());
     }
+
+    /**
+     * remove order on the map
+     * @param int order_id
+     * @return [type] [description]
+     */
+    public function remove($order_id)
+    {
+
+    }
 }
