@@ -25,3 +25,4 @@ The Lumen framework is open-sourced software licensed under the [MIT license](ht
 1. For each order deliveryTime > pickupTime >= currentTime
 2. For each order pickupTime <= currentTime + 24 hrs
 3. For each order deliveryTime - pickupTime <= 6 hrs
+4. Does serviceType will affect the strategy(e.g. Type A might have higher priority than B and C)?

@@ -40,8 +40,8 @@ class CreateOrderTest extends TestCase
             $gap['min']           = $gap['min'] ? min($gap['min'], strtotime($response->delivery_time) - strtotime($response->pickup_time)) : strtotime($response->delivery_time) - strtotime($response->pickup_time);
             $i++;
         }
-        echo "\npickup time\nmax: {$pickup_time['max']}, min: {$pickup_time['min']}\n";
-        echo "\ndelivery time\nmax: {$delivery_time['max']}, min: {$delivery_time['min']}\n";
-        echo "\ndelivery_time - pickup_time\nmax: " . ($gap['max'] / 3600) . " hrs, min: " . ($gap['min'] / 3600) . " hrs\n";
+        echo "\npickup time\nmin: {$pickup_time['min']}\nmax: {$pickup_time['max']}\n";
+        echo "\ndelivery time\nmin: {$delivery_time['min']}\nmax: {$delivery_time['max']}\n";
+        echo "\ndelivery_time - pickup_time\nmin: " . ($gap['min'] / 3600) . " hrs\nmax: " . ($gap['max'] / 3600) . " hrs\n";
     }
 }
