@@ -36,14 +36,16 @@ function initMap() {
           dropoff_lat_lng: [dropoff_lat_lng.lat(), dropoff_lat_lng.lng()]
         },
         success: function(res) {
-          console.log(res);
+          //console.log(res);
           markers.push(new google.maps.Marker({
             position: pickup_lat_lng,
-            map: map
+            map: map,
+            icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
           }));
           markers.push(new google.maps.Marker({
             position: dropoff_lat_lng,
-            map: map
+            map: map,
+            icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
           }));
         },
         error: function(e) {
@@ -55,7 +57,9 @@ function initMap() {
 
   // function to create random marker(inside bounds)
   function getRandomCoordinate(map_bounds) {
-    return new google.maps.LatLng(map_bounds.sw_lat + (Math.random() * (map_bounds.ne_lat - map_bounds.sw_lat)),
+    //https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
+    var random_lat_lng = new google.maps.LatLng(map_bounds.sw_lat + (Math.random() * (map_bounds.ne_lat - map_bounds.sw_lat)),
       map_bounds.sw_lng + (Math.random() * (map_bounds.ne_lng - map_bounds.sw_lng)));
+    return random_lat_lng;
   }
 }
