@@ -10,16 +10,4 @@ return [
     'max_span_bt_now_pickup'      => 60 * 60,
     // deliveryTime - pickupTime <= 6 hrs
     'max_span_bt_pickup_delivery' => 6 * 60 * 60,
-
-    // map boundaries for hongkong(northeast, southwest)
-    'map_boundaries'              => [
-        'ne' => [
-            'lat' => 22.50823614007428,
-            'lng' => 114.45359691269528,
-        ],
-        'sw' => [
-            'lat' => 22.11311632940318,
-            'lng' => 113.89192088730465,
-        ],
-    ],
 ];
