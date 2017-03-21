@@ -1,5 +1,4 @@
 <?php
-date_default_timezone_set('Asia/Hong_Kong');
 
 require_once __DIR__.'/../vendor/autoload.php';
 
@@ -23,6 +22,9 @@ try {
 $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
 );
+
+// use config file
+$app->configure('app');
 
 // $app->withFacades();
 
