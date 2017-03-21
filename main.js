@@ -1,4 +1,6 @@
 var map,
+  directions_service,
+  directions_display,
   map_bounds = {
     'ne_lat': 22.50823614007428,
     'ne_lng': 114.45359691269528,
@@ -8,6 +10,8 @@ var map,
   markers = [];
 
 function initMap() {
+  directions_service = new google.maps.DirectionsService;
+  directions_display = new google.maps.DirectionsRenderer;
   map = new google.maps.Map(document.getElementById('map'), {
     center: {
       lat: 22.310816,
@@ -15,6 +19,7 @@ function initMap() {
     },
     zoom: 11
   });
+  directions_display.setMap(map);
 
   $('.create_orders').on('click', function() {
     for (var i = 0; i < markers.length; i++) {
@@ -37,16 +42,18 @@ function initMap() {
         },
         success: function(res) {
           //console.log(res);
-          markers.push(new google.maps.Marker({
+          var start = new google.maps.Marker({
             position: pickup_lat_lng,
             map: map,
             icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
-          }));
-          markers.push(new google.maps.Marker({
+          });
+          var end = new google.maps.Marker({
             position: dropoff_lat_lng,
             map: map,
             icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
-          }));
+          });
+          markers.push(start, end);
+          calculateAndDisplayRoute(directions_service, directions_display, pickup_lat_lng, dropoff_lat_lng);
         },
         error: function(e) {
           console.log(e);
@@ -54,12 +61,28 @@ function initMap() {
       });
     }
   });
+}
 
-  // function to create random marker(inside bounds)
-  function getRandomCoordinate(map_bounds) {
-    //https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
-    var random_lat_lng = new google.maps.LatLng(map_bounds.sw_lat + (Math.random() * (map_bounds.ne_lat - map_bounds.sw_lat)),
-      map_bounds.sw_lng + (Math.random() * (map_bounds.ne_lng - map_bounds.sw_lng)));
-    return random_lat_lng;
-  }
+function calculateAndDisplayRoute(directions_service, directions_display, start, end) {
+  directions_service.route({
+    origin: start,
+    destination: end,
+    travelMode: google.maps.TravelMode.DRIVING
+  }, function(response, status) {
+    if (status === google.maps.DirectionsStatus.OK) {
+      directions_display.setDirections(response);
+    } else {
+      console.log('Directions request failed due to ' + status);
+    }
+  });
+}
+
+/**
+ * function to create random marker(inside bounds)
+ */
+function getRandomCoordinate(map_bounds) {
+  //https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=YOUR_API_KEY
+  var random_lat_lng = new google.maps.LatLng(map_bounds.sw_lat + (Math.random() * (map_bounds.ne_lat - map_bounds.sw_lat)),
+    map_bounds.sw_lng + (Math.random() * (map_bounds.ne_lng - map_bounds.sw_lng)));
+  return random_lat_lng;
 }
