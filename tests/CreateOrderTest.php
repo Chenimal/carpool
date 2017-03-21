@@ -27,11 +27,18 @@ class CreateOrderTest extends TestCase
             'max' => null,
             'min' => null,
         ];
+        $service_types = [];
 
         $i = 0;
         while ($i < $this->loop) {
             $response = $this->call('GET', 'orders/create')
                 ->getData();
+
+            if (!isset($service_types[$response->service_type])) {
+                $service_types[$response->service_type] = 0;
+            }
+            $service_types[$response->service_type]++;
+
             $pickup_time['max']   = $pickup_time['max'] ? max($pickup_time['max'], $response->pickup_time) : $response->pickup_time;
             $pickup_time['min']   = $pickup_time['min'] ? min($pickup_time['min'], $response->pickup_time) : $response->pickup_time;
             $delivery_time['max'] = $delivery_time['max'] ? max($delivery_time['max'], $response->delivery_time) : $response->delivery_time;
@@ -40,8 +47,12 @@ class CreateOrderTest extends TestCase
             $gap['min']           = $gap['min'] ? min($gap['min'], strtotime($response->delivery_time) - strtotime($response->pickup_time)) : strtotime($response->delivery_time) - strtotime($response->pickup_time);
             $i++;
         }
-        echo "\npickup time\nmin: {$pickup_time['min']}\nmax: {$pickup_time['max']}\n";
-        echo "\ndelivery time\nmin: {$delivery_time['min']}\nmax: {$delivery_time['max']}\n";
-        echo "\ndelivery_time - pickup_time\nmin: " . ($gap['min'] / 3600) . " hrs\nmax: " . ($gap['max'] / 3600) . " hrs\n";
+        echo "\nservice_types: \n";
+        foreach ($service_types as $key => $v) {
+            echo "{$key}: {$v}\n";
+        }
+        echo "\npickup time:\nmin: {$pickup_time['min']}\nmax: {$pickup_time['max']}\n";
+        echo "\ndelivery time:\nmin: {$delivery_time['min']}\nmax: {$delivery_time['max']}\n";
+        echo "\nduration(delivery_time - pickup_time):\nmin: " . ($gap['min'] / 3600) . " hrs\nmax: " . ($gap['max'] / 3600) . " hrs\n";
     }
 }
