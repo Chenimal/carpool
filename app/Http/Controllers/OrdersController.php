@@ -17,13 +17,13 @@ class OrdersController extends Controller
     {
         // pickup and delivery time is always end with 0, 15, 30, 45
         $time_interval = 15 * 60;
-        // pickupTime <= currentTime + 24 hrs
-        $max_pickup_time = 24 * 60 * 60;
+        // pickup_time is in the next hour: curren_time < pickup_time <= current_time + 1 hrs
+        $max_pickup_span = 60 * 60;
         // deliveryTime - pickupTime <= 6 hrs
-        $max_delivery_time = 6 * 60 * 60;
+        $max_delivery_span = 6 * 60 * 60;
 
-        $pickup_timestamp   = (floor(time() / $time_interval) + mt_rand(1, $max_pickup_time / $time_interval)) * $time_interval;
-        $delivery_timestamp = $pickup_timestamp + mt_rand(1, $max_delivery_time / $time_interval) * $time_interval;
+        $pickup_timestamp   = (floor(time() / $time_interval) + mt_rand(1, $max_pickup_span / $time_interval)) * $time_interval;
+        $delivery_timestamp = $pickup_timestamp + mt_rand(1, $max_delivery_span / $time_interval) * $time_interval;
         $input              = [
             // service_type could be A, B, or C
             'service_type'     => chr(ord('A') + mt_rand(0, 2)),
@@ -43,6 +43,17 @@ class OrdersController extends Controller
      * @return [type] [description]
      */
     public function remove($order_id)
+    {
+
+    }
+
+    /**
+     * assign an order to a specific vehicle
+     * @param  int $order_id
+     * @param  int $vehicle_id
+     * @return boolean
+     */
+    public function match($order_id, $vehicle_id)
     {
 
     }
