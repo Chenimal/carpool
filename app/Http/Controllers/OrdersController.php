@@ -15,7 +15,7 @@ class OrdersController extends Controller
      */
     public function create()
     {
-        // pickup and delivery time is always end with 0, 15, 30, 45
+        // pickup time is always end up with 0, 15, 30, 45
         $time_interval = 15 * 60;
         // pickup_time is in the next hour: curren_time < pickup_time <= current_time + 1 hrs
         $max_pickup_span = 60 * 60;
@@ -32,9 +32,8 @@ class OrdersController extends Controller
             'pickup_lat_lng'  => ['114.53254', '21.2314214'],
             'dropoff_lat_lng' => ['114.2341', '23.4543253'],
         ];
-        $order = new Order($input);
-
-        return response()->json($order->getInfo());
+        $order = Order::instance()->create($input);
+        return response()->json($order);
     }
 
     /**
