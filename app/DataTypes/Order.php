@@ -29,7 +29,7 @@ class Order
     }
 
     /**
-     * create new order
+     * create a new order
      * @param  array
      */
     public function create($input = [])
@@ -70,18 +70,23 @@ class Order
     }
 
     /**
-     * search order by order_id
-     * @param  int order_id
+     * search order(s) by order_ids
+     * @param  int or array[int]
      * @return object or null
      */
-    public function getOrderById($order_id)
+    public function getOrderById($order_ids)
     {
-        if (empty($order_id)) {
+        if (empty($order_ids)) {
             throw new \Exception('Invalid order_id');
         }
-        $result = DB::table('orders')
-            ->where('id', $order_id)
-            ->first();
+        $result = DB::table('orders');
+        if (is_array($order_ids)) {
+            $result = $result->whereIn('id', $order_ids)
+                ->get();
+        } else {
+            $result = $result->where('id', $order_ids)
+                ->first();
+        }
         return $result;
     }
 
