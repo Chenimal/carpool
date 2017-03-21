@@ -1,17 +1,22 @@
 <?php
 namespace App\DataTypes;
 
+use DB;
+
 /**
  * order structure
  */
 class Order
 {
-    // required fields when creating order
+    // required input fields when creating order
     private $service_type;
     private $pickup_time;
     private $delivery_time;
-    private $pick_up_lat_lng;
-    private $drop_off_lat_lng;
+    private $pickup_lat_lng;
+    private $dropoff_lat_lng;
+
+    // order id
+    private $id;
 
     /**
      * create new order
@@ -35,16 +40,26 @@ class Order
             abort(500, 'Order\'s delivery time must greater than pickup time');
         }
         $this->delivery_time = $input['delivery_time'];
-        if (empty($input['pick_up_lat_lng']) || empty($input['pick_up_lat_lng'][0]) || empty($input['pick_up_lat_lng'][1])) {
+        if (empty($input['pickup_lat_lng']) || empty($input['pickup_lat_lng'][0]) || empty($input['pickup_lat_lng'][1])) {
             abort(500, 'Unknown order\'s pickup coordinate');
         }
-        $this->pick_up_lat_lng = $input['pick_up_lat_lng'];
-        if (empty($input['drop_off_lat_lng']) || empty($input['drop_off_lat_lng'][0]) || empty($input['drop_off_lat_lng'][1])) {
+        $this->pickup_lat_lng = $input['pickup_lat_lng'];
+        if (empty($input['dropoff_lat_lng']) || empty($input['dropoff_lat_lng'][0]) || empty($input['dropoff_lat_lng'][1])) {
             abort(500, 'Unknown order\'s drop off coordinate');
         }
-        $this->drop_off_lat_lng = $input['drop_off_lat_lng'];
+        $this->dropoff_lat_lng = $input['dropoff_lat_lng'];
 
-        // todo: code of saving order into db below
+        // saving order into db
+        $this->id = DB::table('orders')
+            ->insertGetId([
+                'service_type'  => $this->service_type,
+                'pickup_time'   => $this->pickup_time,
+                'delivery_time' => $this->delivery_time,
+                'pickup_lat'    => $this->pickup_lat_lng[0],
+                'pickup_lng'    => $this->pickup_lat_lng[1],
+                'dropoff_lat'   => $this->dropoff_lat_lng[0],
+                'dropoff_lng'   => $this->dropoff_lat_lng[1],
+            ]);
     }
 
     /**
@@ -55,11 +70,12 @@ class Order
     public function getInfo()
     {
         return [
-            'service_type'     => $this->service_type,
-            'pickup_time'      => $this->pickup_time,
-            'delivery_time'    => $this->delivery_time,
-            'pick_up_lat_lng'  => $this->pick_up_lat_lng,
-            'drop_off_lat_lng' => $this->drop_off_lat_lng,
+            'id'              => $this->id,
+            'service_type'    => $this->service_type,
+            'pickup_time'     => $this->pickup_time,
+            'delivery_time'   => $this->delivery_time,
+            'pickup_lat_lng'  => $this->pickup_lat_lng,
+            'dropoff_lat_lng' => $this->dropoff_lat_lng,
         ];
     }
 
@@ -82,6 +98,5 @@ class Order
     {
         // todo: db related
     }
-
 
 }

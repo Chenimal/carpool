@@ -26,7 +26,8 @@ $app = new Laravel\Lumen\Application(
 // use config file
 $app->configure('app');
 
-// $app->withFacades();
+// use facade
+$app->withFacades();
 
 // $app->withEloquent();
 

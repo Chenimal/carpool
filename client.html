@@ -22,8 +22,19 @@
                 center: {lat: 22.2793278, lng: 114.1628131},
                 zoom: 11
               });
+              new google.maps.KmlLayer({map:map,url:"http://www.geocodezip.com/geoxml3_test/kml/hkisland.kml"});
               var bounds = new google.maps.LatLngBounds();
               console.log(bounds.getSouthWest().lat());
+            }
+            function initialize() {
+              var mapOptions = {
+                zoom: 14,
+                center: new google.maps.LatLng(26.4498954, 74.6399162),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+              };
+              map = new google.maps.Map(document.getElementById('map'),
+                  mapOptions);
+                  new google.maps.KmlLayer({map:map,url:"http://www.zenify.in/kml/59.kml?q=v2"});
             }
 
         </script>

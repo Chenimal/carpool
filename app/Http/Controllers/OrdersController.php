@@ -26,11 +26,11 @@ class OrdersController extends Controller
         $delivery_timestamp = $pickup_timestamp + mt_rand(1, $max_delivery_span / $time_interval) * $time_interval;
         $input              = [
             // service_type could be A, B, or C
-            'service_type'     => chr(ord('A') + mt_rand(0, 2)),
-            'pickup_time'      => date('Y-m-d H:i:s', $pickup_timestamp),
-            'delivery_time'    => date('Y-m-d H:i:s', $delivery_timestamp),
-            'pick_up_lat_lng'  => ['114.53254', '21.2314214'],
-            'drop_off_lat_lng' => ['114.2341', '23.4543253'],
+            'service_type'    => chr(ord('A') + mt_rand(0, 2)),
+            'pickup_time'     => date('Y-m-d H:i:s', $pickup_timestamp),
+            'delivery_time'   => date('Y-m-d H:i:s', $delivery_timestamp),
+            'pickup_lat_lng'  => ['114.53254', '21.2314214'],
+            'dropoff_lat_lng' => ['114.2341', '23.4543253'],
         ];
         $order = new Order($input);
 
