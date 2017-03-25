@@ -6,7 +6,7 @@ class CreateOrderTest extends TestCase
 
     public function testSingleRequest()
     {
-        $response = $this->call('GET', 'orders/create');
+        $response = $this->call('GET', 'orders/create-random');
 
         $this->assertEquals(
             200, $response->status()
@@ -15,7 +15,7 @@ class CreateOrderTest extends TestCase
 
     public function testLoopRequest()
     {
-        $pickup_time = [];
+        $pickup_time   = [];
         $delivery_time = [
             'max' => null,
             'min' => null,

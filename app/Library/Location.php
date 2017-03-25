@@ -1,6 +1,6 @@
 <?php
 
-namespace Library;
+namespace App\Library;
 
 /**
  * location service

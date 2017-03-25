@@ -2,8 +2,8 @@
 namespace App\Http\Controllers;
 
 use App\DataTypes\Order;
+use App\Library\Location;
 use Illuminate\Http\Request;
-use Library\Location;
 
 /**
  * order related api
