@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\DataTypes\Order;
 use Illuminate\Http\Request;
+use Library\Location;
 
 /**
  * order related api
@@ -32,8 +33,8 @@ class OrdersController extends Controller
             'service_type'    => chr(ord('A') + mt_rand(0, 2)),
             'pickup_time'     => date('Y-m-d H:i:s', $pickup_timestamp),
             'delivery_time'   => date('Y-m-d H:i:s', $delivery_timestamp),
-            'pickup_lat_lng'  => $request->input('pickup_lat_lng'),
-            'dropoff_lat_lng' => $request->input('dropoff_lat_lng'),
+            'pickup_lat_lng'  => Location::createRandomAccessibleLocation(),
+            'dropoff_lat_lng' => Location::createRandomAccessibleLocation(),
         ];
         $order    = Order::instance()->create($input);
         $response = response()->json($order);
