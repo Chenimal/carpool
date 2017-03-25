@@ -14,7 +14,7 @@ class OrdersController extends Controller
      * @param none
      * @return  json/jsonp
      */
-    public function create(Request $request)
+    public function createRandom(Request $request)
     {
         // pickup time is always end up with 0, 15, 30, 45
         $time_interval = config('app.pickup_time_interval');

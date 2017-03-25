@@ -16,6 +16,6 @@ $app->get('/', function () use ($app) {
 });
 
 // create single order
-$app->get('orders/create', [
-    'uses' => 'OrdersController@create',
+$app->get('orders/create-random', [
+    'uses' => 'OrdersController@createRandom',
 ]);
