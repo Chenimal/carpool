@@ -29,12 +29,27 @@ function initMap() {
     });
   });
 
+  $('.get_vehicles').on('click', function() {
+    console.log(123);
+  });
+
   /**
    * create random order
    */
   function createOrder() {
     return $.ajax({
       url: 'http://carpool.lalamove.com/orders/create-random',
+      dataType: 'jsonp',
+      jsonp: 'jsonp',
+    });
+  }
+
+  /**
+   * create two random vehicle
+   */
+  function createVehicles() {
+    return $.ajax({
+      url: 'http://carpool.lalamove.com/orders/create-vehicle',
       dataType: 'jsonp',
       jsonp: 'jsonp',
     });

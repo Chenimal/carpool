@@ -25,7 +25,7 @@ class Location
 
         $url    = $map['base_url'] . 'direction/driving?key=' . $map['key'] . '&origin=' . implode(',', $map['locations']['center']) . '&destination=' . implode(',', $random_spot);
         $result = self::curlGet($url);
-
+        print_r($result);exit;
         return $random_spot;
     }
 

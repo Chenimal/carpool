@@ -19,3 +19,8 @@ $app->get('/', function () use ($app) {
 $app->get('orders/create-random', [
     'uses' => 'OrdersController@createRandom',
 ]);
+
+// get single vehicle info
+$app->get('vehicles/random', [
+    'uses' => 'OrdersController@createRandom',
+]);
