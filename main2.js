@@ -1,4 +1,7 @@
-var markers = [];
+var markers = [],
+  vehicles = [],
+  order_colors = ['blue', 'orange', 'green', 'blue', 'orchid'],
+  cur_color = 0;
 
 function initMap() {
   var map = new AMap.Map('container', {
@@ -15,22 +18,46 @@ function initMap() {
     });
     createOrder().done(function(res) {
       console.log(res);
-      var start = new AMap.Marker({
-        icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
-        position: res.pickup_lat_lng
+      AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
+        var start = new SimpleMarker({
+          iconLabel: 'S',
+          iconStyle: order_colors[cur_color % 5],
+          map: map,
+          position: res.pickup_lat_lng
+        });
+        var end = new SimpleMarker({
+          iconLabel: 'E',
+          iconStyle: order_colors[cur_color++ % 5],
+          map: map,
+          position: res.dropoff_lat_lng
+        });
+        markers.push(start, end);
       });
-      start.setMap(map);
-      var end = new AMap.Marker({
-        icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png",
-        position: res.dropoff_lat_lng
-      });
-      end.setMap(map);
-      markers.push(start, end);
     });
   });
 
   $('.get_vehicles').on('click', function() {
-    console.log(123);
+    vehicles.map(function(item) {
+      item.setMap(null);
+    });
+    createVehicles().done(function(vehicles) {
+      console.log(vehicles);
+      AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
+        var start = new SimpleMarker({
+          iconLabel: 'v1',
+          iconStyle: 'lightgreen',
+          map: map,
+          position: vehicles[0]
+        });
+        var end = new SimpleMarker({
+          iconLabel: 'v2',
+          iconStyle: 'lightgreen',
+          map: map,
+          position: vehicles[1]
+        });
+        vehicles.push(start, end);
+      });
+    });
   });
 
   /**
@@ -49,7 +76,7 @@ function initMap() {
    */
   function createVehicles() {
     return $.ajax({
-      url: 'http://carpool.lalamove.com/orders/create-vehicle',
+      url: 'http://carpool.lalamove.com/vehicles/random',
       dataType: 'jsonp',
       jsonp: 'jsonp',
     });

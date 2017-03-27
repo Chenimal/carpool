@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controller;
+namespace App\Http\Controllers;
 
 use App\Library\Location;
 use Illuminate\Http\Request;
@@ -8,15 +8,15 @@ use Illuminate\Http\Request;
 class VehiclesController extends Controller
 {
     /**
-     * get vehicle randomly
+     * get 2 vehicle randomly
      * @param none
      * @return  json/jsonp
      */
-    public function random(Request $request)
+    public function getRandom(Request $request)
     {
         $vehicle_info = [
-            'id'      => mt_rand(1, 1000),
-            'lat_lng' => Location::createRandomAccessibleLocation(),
+            Location::createRandomAccessibleLocation(),
+            Location::createRandomAccessibleLocation(),
         ];
 
         $response = response()->json($vehicle_info);

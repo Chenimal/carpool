@@ -18,14 +18,17 @@ class Location
         $span_lng = $map['locations']['north_east'][0] - $map['locations']['south_west'][0];
         $span_lat = $map['locations']['north_east'][1] - $map['locations']['south_west'][1];
 
-        $random_spot = [
-            $map['locations']['south_west'][0] + $span_lng * mt_rand() / mt_getrandmax(),
-            $map['locations']['south_west'][1] + $span_lat * mt_rand() / mt_getrandmax(),
-        ];
+        $status = false;
+        while (!$status) {
+            $random_spot = [
+                $map['locations']['south_west'][0] + $span_lng * mt_rand() / mt_getrandmax(),
+                $map['locations']['south_west'][1] + $span_lat * mt_rand() / mt_getrandmax(),
+            ];
 
-        $url    = $map['base_url'] . 'direction/driving?key=' . $map['key'] . '&origin=' . implode(',', $map['locations']['center']) . '&destination=' . implode(',', $random_spot);
-        $result = self::curlGet($url);
-        print_r($result);exit;
+            $url    = $map['base_url'] . 'direction/driving?key=' . $map['key'] . '&origin=' . implode(',', $map['locations']['center']) . '&destination=' . implode(',', $random_spot);
+            $result = self::curlGet($url);
+            $status = $result->status;
+        }
         return $random_spot;
     }
 
@@ -47,6 +50,6 @@ class Location
             return curl_error($ch);
         }
         curl_close($ch);
-        return $response;
+        return json_decode($response);
     }
 }

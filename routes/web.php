@@ -22,5 +22,5 @@ $app->get('orders/create-random', [
 
 // get single vehicle info
 $app->get('vehicles/random', [
-    'uses' => 'OrdersController@createRandom',
+    'uses' => 'VehiclesController@getRandom',
 ]);
