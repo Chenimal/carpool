@@ -63,7 +63,12 @@ class OrdersController extends Controller
      */
     public function assign(Request $request)
     {
-        $response = response()->json($request->input('orders'));
+        $response = response()->json(
+            [
+                'orders'   => $request->input('orders'),
+                'vehicles' => $request->input('vehicles'),
+            ]
+        );
 
         // jsonp
         if ($request->input('jsonp')) {

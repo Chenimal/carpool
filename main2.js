@@ -95,27 +95,22 @@ function initMap() {
    */
   function assignOrders() {
     var data = {
-      orders: Object.keys(orders).map(function(k) {
-        return {
-          id: k,
-          position: [orders[k][0].getPosition(), orders[k][0].getPosition()]
-        }
-      }),
+      orders: Object.keys(orders),
       vehicles: Object.keys(vehicles).map(function(k) {
+        var position = vehicles[k].getPosition();
         return {
           id: k,
-          position: vehicles[k].getPosition()
+          position: [position.lat, position.lng]
         };
       })
     };
-    console.log(JSON.stringify(data));
     $.ajax({
       url: base_url + 'orders/assign',
       dataType: 'jsonp',
       jsonp: 'jsonp',
-      data: JSON.stringify(data)
-    }).done(function(res) {
-      console.log(res);
+      data: data
+    }).done(function(a, b) {
+      console.log(a, b);
     });
   }
 
