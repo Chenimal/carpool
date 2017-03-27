@@ -20,6 +20,11 @@ $app->get('orders/create-random', [
     'uses' => 'OrdersController@createRandom',
 ]);
 
+// assign orders
+$app->get('orders/assign', [
+    'uses' => 'OrdersController@assign',
+]);
+
 // get single vehicle info
 $app->get('vehicles/random', [
     'uses' => 'VehiclesController@getRandom',

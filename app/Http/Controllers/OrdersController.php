@@ -61,8 +61,14 @@ class OrdersController extends Controller
      * @param  int $vehicle_id
      * @return boolean
      */
-    public function match($order_id, $vehicle_id)
+    public function assign(Request $request)
     {
+        $response = response()->json($request->input('orders'));
 
+        // jsonp
+        if ($request->input('jsonp')) {
+            $response->setCallback($request->input('jsonp'));
+        }
+        return $response;
     }
 }

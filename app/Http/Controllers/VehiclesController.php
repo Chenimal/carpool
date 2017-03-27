@@ -15,8 +15,8 @@ class VehiclesController extends Controller
     public function getRandom(Request $request)
     {
         $vehicle_info = [
-            Location::createRandomAccessibleLocation(),
-            Location::createRandomAccessibleLocation(),
+            'a' => Location::createRandomAccessibleLocation(),
+            'b' => Location::createRandomAccessibleLocation(),
         ];
 
         $response = response()->json($vehicle_info);

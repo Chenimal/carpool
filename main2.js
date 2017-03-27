@@ -1,7 +1,8 @@
-var markers = [],
-  vehicles = [],
+var base_url = 'http://carpool.lalamove.com/',
   order_colors = ['blue', 'orange', 'green', 'blue', 'orchid'],
-  cur_color = 0;
+  cur_color = 0,
+  orders = {},
+  vehicles = {};
 
 function initMap() {
   var map = new AMap.Map('container', {
@@ -13,10 +14,32 @@ function initMap() {
   });
 
   $('.create_orders').on('click', function() {
-    markers.map(function(item) {
-      item.setMap(null);
+    Object.keys(orders).map(function(k) {
+      orders[k][0].setMap(null);
+      orders[k][1].setMap(null);
     });
-    createOrder().done(function(res) {
+    orders = {};
+    var num_orders = 1; //Math.ceil(Math.random() * 5);
+    for (var i = 0; i < num_orders; i++) {
+      createOrder();
+    }
+  });
+  $('.get_vehicles').on('click', function() {
+    getVehicles();
+  });
+  $('.assign_orders').on('click', function() {
+    assignOrders();
+  });
+
+  /**
+   * create random order
+   */
+  function createOrder() {
+    return $.ajax({
+      url: base_url + 'orders/create-random',
+      dataType: 'jsonp',
+      jsonp: 'jsonp',
+    }).done(function(res) {
       console.log(res);
       AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
         var start = new SimpleMarker({
@@ -31,54 +54,69 @@ function initMap() {
           map: map,
           position: res.dropoff_lat_lng
         });
-        markers.push(start, end);
+        orders[res.id] = [start, end];
       });
-    });
-  });
-
-  $('.get_vehicles').on('click', function() {
-    vehicles.map(function(item) {
-      item.setMap(null);
-    });
-    createVehicles().done(function(vehicles) {
-      console.log(vehicles);
-      AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
-        var start = new SimpleMarker({
-          iconLabel: 'v1',
-          iconStyle: 'lightgreen',
-          map: map,
-          position: vehicles[0]
-        });
-        var end = new SimpleMarker({
-          iconLabel: 'v2',
-          iconStyle: 'lightgreen',
-          map: map,
-          position: vehicles[1]
-        });
-        vehicles.push(start, end);
-      });
-    });
-  });
-
-  /**
-   * create random order
-   */
-  function createOrder() {
-    return $.ajax({
-      url: 'http://carpool.lalamove.com/orders/create-random',
-      dataType: 'jsonp',
-      jsonp: 'jsonp',
     });
   }
 
   /**
    * create two random vehicle
    */
-  function createVehicles() {
+  function getVehicles() {
+    Object.keys(vehicles).map(function(k) {
+      vehicles[k].setMap(null);
+    });
+    vehicles = {};
     return $.ajax({
-      url: 'http://carpool.lalamove.com/vehicles/random',
+      url: base_url + 'vehicles/random',
       dataType: 'jsonp',
       jsonp: 'jsonp',
+    }).done(function(data) {
+      console.log(data);
+      AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
+        vehicles['a'] = new SimpleMarker({
+          iconLabel: 'v1',
+          iconStyle: 'lightgreen',
+          map: map,
+          position: data['a']
+        });
+        vehicles['b'] = new SimpleMarker({
+          iconLabel: 'v2',
+          iconStyle: 'lightgreen',
+          map: map,
+          position: data['b']
+        });
+      });
+    });;
+  }
+
+  /**
+   * submit assign order request
+   */
+  function assignOrders() {
+    var data = {
+      orders: Object.keys(orders).map(function(k) {
+        return {
+          id: k,
+          position: [orders[k][0].getPosition(), orders[k][0].getPosition()]
+        }
+      }),
+      vehicles: Object.keys(vehicles).map(function(k) {
+        return {
+          id: k,
+          position: vehicles[k].getPosition()
+        };
+      })
+    };
+    console.log(JSON.stringify(data));
+    $.ajax({
+      url: base_url + 'orders/assign',
+      dataType: 'jsonp',
+      jsonp: 'jsonp',
+      data: JSON.stringify(data)
+    }).done(function(res) {
+      console.log(res);
     });
   }
+
 }
