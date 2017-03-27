@@ -63,10 +63,13 @@ class OrdersController extends Controller
      */
     public function assign(Request $request)
     {
+        $orders   = Order::instance()->getOrderById($request->input('orders'));
+        $vehicles = $request->input('vehicles');
+
         $response = response()->json(
             [
-                'orders'   => $request->input('orders'),
-                'vehicles' => $request->input('vehicles'),
+                'orders'   => $orders,
+                'vehicles' => $vehicles,
             ]
         );
 
