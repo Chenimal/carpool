@@ -1,5 +1,6 @@
 vendor
+.env-dev
+.env-example
 .git
 .gitignore
-composer.json
-composer.lock
+storage
