@@ -63,13 +63,13 @@ class Strategy
         $min_num_orders = max(0, count($order_ids) - $max_num_orders);
 
         $splits = [];
-        for ($i = $min_num_orders; $i < $max_num_orders; $i++) {
+        for ($i = $min_num_orders; $i <= $max_num_orders; $i++) {
             $splits_vehicle_a = math_combination($order_ids, $i);
-            $splits[]         = [$splits_vehicle_a, array_diff($order_ids, $splits_vehicle_a)];
+            foreach ($splits_vehicle_a as $combination_a) {
+                $splits[] = [$combination_a, array_diff($order_ids, $combination_a)];
+            }
         }
-        // when order=1
-        var_dump($splits);
-        exit;
+        return $splits;
     }
 
     /**
