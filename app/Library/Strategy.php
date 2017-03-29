@@ -21,10 +21,11 @@ class Strategy
             return;
         }
         // first lets only consider one order
+        $results = [];
         foreach ($orders as $order) {
-            $result = Location::distance($vehicles, [$order->pickup_lat, $order->pickup_lng]);
-            print_r($result);
+            $results[] = Location::distance($vehicles, [$order->pickup_lng, $order->pickup_lat]);
         }
+        print_r($results);
         exit;
     }
 }
