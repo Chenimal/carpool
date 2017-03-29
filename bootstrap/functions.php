@@ -49,3 +49,32 @@ function math_sequence($arr)
     }
     return $result;
 }
+
+/**
+ * return vectors of two point from given array
+ * (each end point can be pointed from any other point,
+ *  but each start point cannot be pointed from its own pair's end point,
+ *  since it must first reach start point to pickup, before go to destination, for each order)
+ * @param  array $arr e.g. [[elt1_start, elt1_end], [elt2_start,elt2_end]...]
+ * @return array e.g. [
+ *    'order1_end'=>[
+ *        'order1_start'
+ *        'order2_end'
+ *     ],...
+ *  ]
+ */
+function math_vector($arr)
+{
+    $result = [];
+    foreach ($arr as $key => $pair) {
+        $result[$pair[0]] = [];
+
+        $rest_arr = array_except($arr, $key);
+        foreach ($rest_arr as $r) {
+            $result[$pair[0]][] = $r[0];
+            $result[$pair[0]][] = $r[1];
+        }
+        $result[$pair[1]] = array_merge($result[$pair[0]], [$pair[0]]);
+    }
+    return $result;
+}

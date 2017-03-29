@@ -89,10 +89,24 @@ class Strategy
     }
 
     /**
-     * find out distance&duration between any spot of orders
+     * find out all possible distance & duration between sub-sections of orders
+     * @param array order_ids
+     * @param array vehicles
+     * @return array
+     * e.g. [
+     *    'order1_end'=>[
+     *        'order1_start'=>['distance'=> 100000, 'duration'=>3600],
+     *        'order2_end'=>['distance'=>4600,'duration'=>600],
+     *     ],...
+     *  ]
      */
-    public static function subSectionDistance($order_ids, $vehicles)
+    public static function subSectionDistances($order_ids, $vehicles)
     {
-
+        $points = [];
+        foreach ($order_ids as $id) {
+            $points[] = [$id . '_start', $id . '_end'];
+        }
+        $vectors = math_vector($points);
+        var_dump($vectors);
     }
 }
