@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\DataTypes\Order;
 use App\Library\Location;
+use App\Library\Strategy;
 use Illuminate\Http\Request;
 
 /**
@@ -32,9 +33,9 @@ class OrdersController extends Controller
             // service_type could be A, B, or C
             'service_type'    => chr(ord('A') + mt_rand(0, 2)),
             'pickup_time'     => date('Y-m-d H:i:s', $pickup_timestamp),
+            'pickup_lng_lat'  => Location::createRandomAccessibleLocation(),
             'delivery_time'   => date('Y-m-d H:i:s', $delivery_timestamp),
-            'pickup_lat_lng'  => Location::createRandomAccessibleLocation(),
-            'dropoff_lat_lng' => Location::createRandomAccessibleLocation(),
+            'dropoff_lng_lat' => Location::createRandomAccessibleLocation(),
         ];
         $order    = Order::instance()->create($input);
         $response = response()->json($order);
@@ -66,6 +67,9 @@ class OrdersController extends Controller
         $orders   = Order::instance()->getOrderById($request->input('orders'));
         $vehicles = $request->input('vehicles');
 
+        $result = Strategy::basic($orders, $vehicles);
+        var_dump($result);
+        exit;
         $response = response()->json(
             [
                 'orders'   => $orders,

@@ -48,10 +48,10 @@ class Order
         if ($input['pickup_time'] >= $input['delivery_time']) {
             throw new \Exception('Order\'s delivery time must greater than pickup time');
         }
-        if (empty($input['pickup_lat_lng']) || empty($input['pickup_lat_lng'][0]) || empty($input['pickup_lat_lng'][1])) {
+        if (empty($input['pickup_lng_lat']) || empty($input['pickup_lng_lat'][0]) || empty($input['pickup_lng_lat'][1])) {
             throw new \Exception('Unknown order\'s pickup coordinate');
         }
-        if (empty($input['dropoff_lat_lng']) || empty($input['dropoff_lat_lng'][0]) || empty($input['dropoff_lat_lng'][1])) {
+        if (empty($input['dropoff_lng_lat']) || empty($input['dropoff_lng_lat'][0]) || empty($input['dropoff_lng_lat'][1])) {
             throw new \Exception('Unknown order\'s drop off coordinate');
         }
 
@@ -61,10 +61,10 @@ class Order
                 'service_type'  => $input['service_type'],
                 'pickup_time'   => $input['pickup_time'],
                 'delivery_time' => $input['delivery_time'],
-                'pickup_lat'    => $input['pickup_lat_lng'][0],
-                'pickup_lng'    => $input['pickup_lat_lng'][1],
-                'dropoff_lat'   => $input['dropoff_lat_lng'][0],
-                'dropoff_lng'   => $input['dropoff_lat_lng'][1],
+                'pickup_lng'    => $input['pickup_lng_lat'][0],
+                'pickup_lat'    => $input['pickup_lng_lat'][1],
+                'dropoff_lng'   => $input['dropoff_lng_lat'][0],
+                'dropoff_lat'   => $input['dropoff_lng_lat'][1],
             ]);
         return $input;
     }
@@ -74,7 +74,7 @@ class Order
      * @param  int or array[int]
      * @return object or null
      */
-    public function getOrderById($order_ids)
+    public static function getOrderById($order_ids)
     {
         if (empty($order_ids)) {
             throw new \Exception('Invalid order_id');

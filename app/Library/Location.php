@@ -9,33 +9,65 @@ class Location
 {
     /**
      * createRandomAccessibleLocation
-     * @return array[lat,lng]
+     * @return array[lng, lat, distance, duration]
      */
     public static function createRandomAccessibleLocation()
     {
         $map = config('app.map');
 
-        $span_lng = $map['locations']['north_east'][0] - $map['locations']['south_west'][0];
-        $span_lat = $map['locations']['north_east'][1] - $map['locations']['south_west'][1];
+        $base_lng = $map['locations']['south_west'][0];
+        $base_lat = $map['locations']['south_west'][1];
+        $span_lng = $map['locations']['north_east'][0] - $base_lng;
+        $span_lat = $map['locations']['north_east'][1] - $base_lat;
 
-        $status = false;
-        while (!$status) {
-            $random_spot = [
-                $map['locations']['south_west'][0] + $span_lng * mt_rand() / mt_getrandmax(),
-                $map['locations']['south_west'][1] + $span_lat * mt_rand() / mt_getrandmax(),
-            ];
+        $base_url = $map['base_url'] . 'distance?key=' . $map['key'] . '&destination=' . implode(',', $map['locations']['center']);
 
-            $url    = $map['base_url'] . 'direction/driving?key=' . $map['key'] . '&origin=' . implode(',', $map['locations']['center']) . '&destination=' . implode(',', $random_spot);
+        while (1) {
+            $random_spot = [];
+            // 高德 Api only support up to 100 origins
+            for ($i = 0; $i < 100; $i++) {
+                $random_spot[] = ($base_lng + $span_lng * mt_rand() / mt_getrandmax())
+                    . ',' . ($base_lat + $span_lat * mt_rand() / mt_getrandmax());
+            }
+            $url    = $base_url . '&origins=' . implode('|', $random_spot);
             $result = self::curlGet($url);
-            $status = $result->status;
+            if ($result->status != 1) {
+                return false;
+            }
+            foreach ($result->results as $item) {
+                if (!isset($item->info)) {
+                    return explode(',', $random_spot[$item->origin_id + 1]);
+                }
+            }
         }
-        return $random_spot;
+    }
+
+    /**
+     * measure distance between origin(s) and destination
+     * @param  array[latLng, ...] $origins
+     * @param  lagLng
+     * @return
+     */
+    public static function distance($origins, $destination)
+    {
+        $map = config('app.map');
+
+        $origins_str = [];
+        foreach ($origins as $origin) {
+            $origins_str[] = implode(',', $origin);
+        }
+        $origins_str     = implode('|', $origins_str);
+        $destination_str = implode(',', $destination);
+
+        $url    = $map['base_url'] . 'distance?key=' . $map['key'] . '&origins=' . $origins_str . "&destination=" . $destination_str;
+        $result = self::curlGet($url);
+        return $result;
     }
 
     /**
      * curl get request
      */
-    public static function curlGet($url)
+    protected static function curlGet($url)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

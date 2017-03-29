@@ -46,13 +46,13 @@ function initMap() {
           iconLabel: 'S',
           iconStyle: order_colors[cur_color % 5],
           map: map,
-          position: res.pickup_lat_lng
+          position: res.pickup_lng_lat
         });
         var end = new SimpleMarker({
           iconLabel: 'E',
           iconStyle: order_colors[cur_color++ % 5],
           map: map,
-          position: res.dropoff_lat_lng
+          position: res.dropoff_lng_lat
         });
         orders[res.id] = [start, end];
       });
@@ -98,10 +98,7 @@ function initMap() {
       orders: Object.keys(orders),
       vehicles: Object.keys(vehicles).map(function(k) {
         var position = vehicles[k].getPosition();
-        return {
-          id: k,
-          position: [position.lat, position.lng]
-        };
+        return [position.lng, position.lat];
       })
     };
     $.ajax({
