@@ -9,7 +9,7 @@ class Location
 {
     /**
      * createRandomAccessibleLocation
-     * @return array[lng, lat, distance, duration]
+     * @return array[lng, lat]
      */
     public static function createRandomAccessibleLocation()
     {
@@ -56,12 +56,9 @@ class Location
         foreach ($origins as $origin) {
             $origins_str[] = implode(',', $origin);
         }
-        $origins_str     = implode('|', $origins_str);
-        $destination_str = implode(',', $destination);
-
-        $url    = $map['base_url'] . 'distance?key=' . $map['key'] . '&origins=' . $origins_str . "&destination=" . $destination_str;
+        $url    = $map['base_url'] . 'distance?key=' . $map['key'] . '&origins=' . implode('|', $origins_str) . "&destination=" . implode(',', $destination);
         $result = self::curlGet($url);
-        return $result;
+        return $result->results;
     }
 
     /**
