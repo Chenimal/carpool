@@ -39,10 +39,10 @@ class Order
             throw new \Exception('Unknown order\'s service_type');
         }
         $input['service_type'] = constant("App\DataTypes\ServiceType::{$input['service_type']}");
-        if (empty($input['pickup_time']) || !strtotime($input['pickup_time'])) {
+        if (empty($input['pickup_time'])) {
             throw new \Exception('Invalid order\'s pickup time');
         }
-        if (empty($input['delivery_time']) || !strtotime($input['delivery_time'])) {
+        if (empty($input['delivery_time'])) {
             throw new \Exception('Invalid order\'s delivery time');
         }
         if ($input['pickup_time'] >= $input['delivery_time']) {

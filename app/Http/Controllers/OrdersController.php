@@ -32,13 +32,16 @@ class OrdersController extends Controller
         $input = [
             // service_type could be A, B, or C
             'service_type'    => chr(ord('A') + mt_rand(0, 2)),
-            'pickup_time'     => date('Y-m-d H:i:s', $pickup_timestamp),
+            'pickup_time'     => $pickup_timestamp,
             'pickup_lng_lat'  => $pickup_lng_lat,
-            'delivery_time'   => date('Y-m-d H:i:s', $delivery_timestamp),
+            'delivery_time'   => $delivery_timestamp,
             'dropoff_lng_lat' => $dropoff_lng_lat,
         ];
-        $order    = Order::instance()->create($input);
-        $response = response()->json($order);
+        $order = Order::instance()->create($input);
+
+        $order['pickup_time']   = date('Y-m-d H:i:s', $order['pickup_time']);
+        $order['delivery_time'] = date('Y-m-d H:i:s', $order['delivery_time']);
+        $response               = response()->json($order);
         // jsonp
         if ($request->input('jsonp')) {
             $response->setCallback($request->input('jsonp'));
