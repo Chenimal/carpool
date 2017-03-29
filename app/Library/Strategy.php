@@ -20,7 +20,6 @@ class Strategy
         if (empty($orders) || count($vehicles) !== 2) {
             return;
         }
-
         $total_duration = [
             0 => 0,
             1 => 0,
@@ -29,7 +28,6 @@ class Strategy
             0 => 0,
             1 => 0,
         ];
-
         /**
          * don't consider time
          * 1. consider 1 order(done)
@@ -51,5 +49,33 @@ class Strategy
         $shortest_distance = array_keys($total_distance, min($total_distance));
         var_dump($total_duration, $total_distance, $least_duration, $shortest_distance);
         exit;
+    }
+
+    /**
+     * find out all possible ways of spliting orders to two vehicles
+     * @param array $order_ids
+     * @return array of possible splits: [[order_ids_for_vehicle_a, order_ids_for vehicle_b], ...]
+     */
+    public static function allSplits($order_ids)
+    {
+
+    }
+
+    /**
+     * find out all possible sequences for each split
+     * @param array [order_ids_for_vehicle_a, order_ids_for vehicle_b]
+     * @return array e.g. ['order_1_start','order_2_start','order_2_end','order_1_end']
+     */
+    public static function allSequences($split)
+    {
+
+    }
+
+    /**
+     * find out distance&duration between any spot of orders
+     */
+    public static function subSectionDistance($orders, $vehicles)
+    {
+
     }
 }
