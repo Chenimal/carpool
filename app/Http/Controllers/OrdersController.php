@@ -61,17 +61,16 @@ class OrdersController extends Controller
 
     /**
      * assign an order to a specific vehicle
-     * @param  int $order_id
-     * @param  int $vehicle_id
+     * @param  int/array $order_ids
+     * @param  array[[vehicle_1_lng,vehicle_1_lat],[vehicle_2_lng,vehicle_2_lat]]
      * @return boolean
      */
     public function assign(Request $request)
     {
-        $orders   = Order::instance()->getOrderById($request->input('orders'));
-        $vehicles = $request->input('vehicles');
+        $order_ids = $request->input('order_ids');
+        $vehicles  = $request->input('vehicles');
 
-        $result = Strategy::basic($orders, $vehicles);
-        var_dump($result);
+        $result = Strategy::allSplits($order_ids);
         exit;
         $response = response()->json(
             [

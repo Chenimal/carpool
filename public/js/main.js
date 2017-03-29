@@ -95,7 +95,7 @@ function initMap() {
    */
   function assignOrders() {
     var data = {
-      orders: Object.keys(orders),
+      order_ids: Object.keys(orders),
       vehicles: Object.keys(vehicles).map(function(k) {
         var position = vehicles[k].getPosition();
         return [position.lng, position.lat];

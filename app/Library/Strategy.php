@@ -58,7 +58,18 @@ class Strategy
      */
     public static function allSplits($order_ids)
     {
+        // maximum&minimum number of orders a vehicle could have at a time
+        $max_num_orders = min(3, count($order_ids));
+        $min_num_orders = max(0, count($order_ids) - $max_num_orders);
 
+        $splits = [];
+        for ($i = $min_num_orders; $i < $max_num_orders; $i++) {
+            $splits_vehicle_a = math_combination($order_ids, $i);
+            $splits[]         = [$splits_vehicle_a, array_diff($order_ids, $splits_vehicle_a)];
+        }
+        // when order=1
+        var_dump($splits);
+        exit;
     }
 
     /**
@@ -74,7 +85,7 @@ class Strategy
     /**
      * find out distance&duration between any spot of orders
      */
-    public static function subSectionDistance($orders, $vehicles)
+    public static function subSectionDistance($order_ids, $vehicles)
     {
 
     }

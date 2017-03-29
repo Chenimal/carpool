@@ -31,6 +31,9 @@ $app->configure('app');
 // use facade
 $app->withFacades();
 
+// load custom functions
+require_once __DIR__ . '/functions.php';
+
 // $app->withEloquent();
 
 /*
