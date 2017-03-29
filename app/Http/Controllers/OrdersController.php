@@ -70,7 +70,7 @@ class OrdersController extends Controller
         $order_ids = $request->input('order_ids');
         $vehicles  = $request->input('vehicles');
 
-        $result = Strategy::allSplits($order_ids);
+        $result = Strategy::sequences($order_ids);
         exit;
         $response = response()->json(
             [

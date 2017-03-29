@@ -52,11 +52,11 @@ class Strategy
     }
 
     /**
-     * find out all possible ways of spliting orders to two vehicles
+     * find out all possible ways of spliting given orders into two vehicles
      * @param array $order_ids
-     * @return array of possible splits: [[order_ids_for_vehicle_a, order_ids_for vehicle_b], ...]
+     * @return array of possible splits: [[order_ids_for_vehicle_a, order_ids_for_vehicle_b], ...]
      */
-    public static function allSplits($order_ids)
+    public static function splits($order_ids)
     {
         // maximum&minimum number of orders a vehicle could have at a time
         $max_num_orders = min(3, count($order_ids));
@@ -73,13 +73,19 @@ class Strategy
     }
 
     /**
-     * find out all possible sequences for each split
-     * @param array [order_ids_for_vehicle_a, order_ids_for vehicle_b]
+     * find out all possible sequences for given orders
+     * @param array order_ids
      * @return array e.g. ['order_1_start','order_2_start','order_2_end','order_1_end']
      */
-    public static function allSequences($split)
+    public static function sequences($order_ids)
     {
-
+        $order_ids = array_slice($order_ids, 2);
+        $points    = [];
+        foreach ($order_ids as $id) {
+            $points[] = [$id . '_start', $id . '_end'];
+        }
+        $sequences = math_sequence($points);
+        return $sequences;
     }
 
     /**
