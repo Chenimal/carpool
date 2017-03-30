@@ -5,7 +5,7 @@ var base_url = 'http://carpool.lalamove.com/',
   vehicles = {},
   line_arr_a = [],
   line_arr_b = [],
-  passed_polyline = [];
+  passed_polyline = {};
 
 function initMap() {
   var map = new AMap.Map('container', {
@@ -48,8 +48,10 @@ function initMap() {
       vehicles[k].setMap(null);
     });
     vehicles = {};
-    map.remove(passed_polyline['a']);
-    map.remove(passed_polyline['b']);
+    Object.keys(passed_polyline).map(function(k) {
+      map.remove(passed_polyline[k]);
+    });
+    passed_polyline = {};
   });
 
   /**
