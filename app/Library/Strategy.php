@@ -55,36 +55,6 @@ class Strategy
         echo "<pre>";
         print_r($solutions);
         echo "</pre>";exit;
-
-        $total_duration = [
-            0 => 0,
-            1 => 0,
-        ];
-        $total_distance = [
-            0 => 0,
-            1 => 0,
-        ];
-        /**
-         * don't consider time
-         * 1. consider 1 order(done)
-         * 2. consider 2 orders:
-         */
-        foreach ($orders as $order) {
-            $distances = Location::distance($vehicles, [$order->pickup_lng, $order->pickup_lat]);
-            foreach ($distances as $distance) {
-                // not accessible
-                if (isset($item->info)) {
-                    continue;
-                }
-                // 一个订单不需要考虑 该订单的开始-结束花费，只需要考虑pickup的
-                $total_distance[$distance->origin_id - 1] += $distance->distance;
-                $total_duration[$distance->origin_id - 1] += $distance->duration;
-            }
-        }
-        $least_duration    = array_keys($total_duration, min($total_duration));
-        $shortest_distance = array_keys($total_distance, min($total_distance));
-        var_dump($total_duration, $total_distance, $least_duration, $shortest_distance);
-        exit;
     }
 
     /**
@@ -210,7 +180,7 @@ class Strategy
             $mapping[$o->id . '_end']   = [$o->dropoff_lng, $o->dropoff_lat];
         }
 
-        $result = [];
+        $request = [];
         foreach ($vectors as $end => $starts) {
             $end_lng_lat    = $mapping[$end];
             $starts_lng_lat = [];
@@ -221,10 +191,23 @@ class Strategy
             $starts_lng_lat[] = $vehicles[1];
             $starts[]         = 'vehicle_0';
             $starts[]         = 'vehicle_1';
-            $distances        = Location::distance($starts_lng_lat, $end_lng_lat);
-            $to_starts        = array_combine($starts, $distances);
-            // distances got from api is xx_end => xx_start, convert to xx_start => xx_end
-            foreach ($to_starts as $start => $d) {
+
+            $request[$end] = [
+                'destination' => $end_lng_lat,
+                'origins'     => array_combine($starts, $starts_lng_lat),
+            ];
+        }
+        $result = Location::distanceBatch($request);
+
+        $i                 = 0;
+        $result_with_index = [];
+        foreach ($request as $end_index => $r) {
+            $result_with_index[$end_index] = array_combine(array_keys($r['origins']), $result[$i++]);
+        }
+        // distances got from api is xx_end => xx_start, convert to xx_start => xx_end
+        $result = [];
+        foreach ($result_with_index as $end => $starts) {
+            foreach ($starts as $start => $d) {
                 if (!isset($result[$start])) {
                     $result[$start] = [];
                 }

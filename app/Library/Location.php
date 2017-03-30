@@ -62,14 +62,41 @@ class Location
     }
 
     /**
+     * measure distance between origin(s) and destination
+     * multi destinations
+     */
+    public static function distanceBatch($request)
+    {
+        $map = config('app.map');
+
+        $urls = [];
+        foreach ($request as $end_index => $r) {
+            $origins_str = [];
+            foreach ($r['origins'] as $start_index => $origin) {
+                $origins_str[] = implode(',', $origin);
+            }
+            $urls[] = ['url' => '/v3/distance?key=' . $map['key'] . '&origins=' . implode('|', $origins_str) . '&destination=' . implode(',', $r['destination'])];
+        }
+        $post_url  = $map['base_url'] . 'batch?key=' . $map['key'];
+        $post_data = json_encode(['ops' => $urls]);
+
+        $result   = self::curlPost($post_url, $post_data);
+        $response = [];
+        foreach ($result as $r) {
+            $response[] = $r->body->results;
+        }
+        return $response;
+    }
+
+    /**
      * curl get request
      */
     protected static function curlGet($url)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 
         //curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         //curl_setopt($ch, CURLOPT_PROXY, '127.0.0.1:1080');
@@ -78,6 +105,23 @@ class Location
         if (curl_errno($ch)) {
             return curl_error($ch);
         }
+        curl_close($ch);
+        return json_decode($response);
+    }
+
+    protected static function curlPost($url, $data = [])
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            return curl_error($ch);
+        }
+        $result = curl_getinfo($ch);
         curl_close($ch);
         return json_decode($response);
     }
