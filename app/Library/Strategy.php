@@ -9,6 +9,8 @@ use App\DataTypes\Order;
  */
 class Strategy
 {
+    private static $sub_section_distances;
+
     /**
      * basic strategy
      * @param  array $orders
@@ -102,11 +104,37 @@ class Strategy
      */
     public static function subSectionDistances($order_ids, $vehicles)
     {
+        if (isset(self::$sub_section_distances)) {
+            return self::$sub_section_distances;
+        }
         $points = [];
         foreach ($order_ids as $id) {
             $points[] = [$id . '_start', $id . '_end'];
         }
         $vectors = math_vector($points);
-        var_dump($vectors);
+
+        $orders  = Order::getOrderById($order_ids);
+        $mapping = [];
+        foreach ($orders as $o) {
+            $mapping[$o->id . '_start'] = [$o->pickup_lng, $o->pickup_lat];
+            $mapping[$o->id . '_end']   = [$o->dropoff_lng, $o->dropoff_lat];
+        }
+
+        $result = [];
+        foreach ($vectors as $end => $starts) {
+            $end_lng_lat    = $mapping[$end];
+            $starts_lng_lat = [];
+            foreach ($starts as $s) {
+                $starts_lng_lat[] = $mapping[$s];
+            }
+            $starts_lng_lat[] = $vehicles[0];
+            $starts_lng_lat[] = $vehicles[1];
+            $starts[]         = 'vehicle_1';
+            $starts[]         = 'vehicle_2';
+            $distances        = Location::distance($starts_lng_lat, $end_lng_lat);
+            $result[$end]     = array_combine($starts, $distances);
+        }
+        self::$sub_section_distances = $result;
+        return self::$sub_section_distances;
     }
 }

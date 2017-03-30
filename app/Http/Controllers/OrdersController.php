@@ -71,7 +71,7 @@ class OrdersController extends Controller
         $vehicles  = $request->input('vehicles');
 
         $result = Strategy::subSectionDistances($order_ids, $vehicles);
-        exit;
+        var_dump($result);exit;
         $response = response()->json(
             [
                 'orders'   => $orders,
