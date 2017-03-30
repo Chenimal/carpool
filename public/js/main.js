@@ -8,7 +8,7 @@ var base_url = 'http://carpool.lalamove.com/',
 
 function initMap() {
   var map = new AMap.Map('container', {
-    center: [114.1727589, 22.310816],
+    center: [114.127439, 22.3746645],
     zoom: 11
   });
   // draw path
@@ -16,17 +16,17 @@ function initMap() {
     map: map,
     // path: lineArr,
     strokeColor: "#F00",
-    // strokeOpacity: 1,     //线透明度
-    strokeWeight: 3, //线宽
-    // strokeStyle: "solid"  //线样式
+    strokeOpacity: 0.8,
+    strokeWeight: 3,
+    // strokeStyle: "solid"
   });
   var passed_polyline_b = new AMap.Polyline({
     map: map,
     // path: lineArr,
     strokeColor: "#00A",
-    // strokeOpacity: 1,     //线透明度
-    strokeWeight: 3, //线宽
-    // strokeStyle: "solid"  //线样式
+    strokeOpacity: 0.8,
+    strokeWeight: 3,
+    // strokeStyle: "solid"
   });
 
   map.plugin(["AMap.ToolBar"], function() {
@@ -39,7 +39,7 @@ function initMap() {
       orders[k][1].setMap(null);
     });
     orders = {};
-    var num_orders = 5; //Math.ceil(Math.random() * 5);
+    var num_orders = 1; //Math.ceil(Math.random() * 5);
     for (var i = 0; i < num_orders; i++) {
       createOrder();
     }
