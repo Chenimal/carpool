@@ -52,9 +52,46 @@ class Strategy
                 ],
             ];
         }
-        echo "<pre>";
-        print_r($solutions);
-        echo "</pre>";exit;
+        $result = self::leastCostSolution($solutions);
+        return $result;
+    }
+
+    /**
+     * find out the shortest sequence from given sollution
+     * @param  array $solutions
+     * @return array $solution
+     */
+    protected static function leastCostSolution($solutions)
+    {
+        $min = [
+            'duration' => [
+                'sequence' => [],
+                'duration' => null,
+                'distance' => null,
+            ],
+            'distance' => [
+                'sequence' => [],
+                'duration' => null,
+                'distance' => null,
+            ],
+        ];
+        foreach ($solutions as $s) {
+            if (!isset($min['duration']['duration']) || array_sum($s['duration']['duration']) < $min['duration']['duration']) {
+                $min['duration'] = [
+                    'sequence' => $s['duration']['sequence'],
+                    'duration' => $s['duration']['duration'],
+                    'distance' => $s['duration']['distance'],
+                ];
+            }
+            if (!isset($min['distance']['distance']) || array_sum($s['distance']['distance']) < $min['distance']['distance']) {
+                $min['distance'] = [
+                    'sequence' => $s['distance']['sequence'],
+                    'duration' => $s['distance']['duration'],
+                    'distance' => $s['distance']['distance'],
+                ];
+            }
+        }
+        return $min;
     }
 
     /**
@@ -63,7 +100,7 @@ class Strategy
      * @param  int 0 or 1, vehicle index
      * @return array min
      */
-    public static function leastCostSequence($sequences, $vehicle_index)
+    protected static function leastCostSequence($sequences, $vehicle_index)
     {
         $min = [
             'duration' => [
@@ -102,7 +139,7 @@ class Strategy
                     'distance' => $distance,
                 ];
             }
-            if (!isset($min['distance']['duration']) || $distance < $min['distance']['distance']) {
+            if (!isset($min['distance']['distance']) || $distance < $min['distance']['distance']) {
                 $min['distance'] = [
                     'key'      => $key,
                     'duration' => $duration,
