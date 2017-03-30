@@ -25,17 +25,36 @@ class Strategy
         // get all sub-section distances from map api (高德地图),
         // it needs 2 * count(order_ids) requests, which is kinda expensive
         // considering make it happen in client side ?
-
-        //self::subSectionDistances($order_ids, $vehicles);
+        self::subSectionDistances($order_ids, $vehicles);
 
         // get all possible splits of orders
-        $splits = self::splits($order_ids);
-        foreach ($splits as $s) {
-            $sequences_vehicle_0 = self::sequences($s[0]);
-            $sequences_vehicle_1 = self::sequences($s[1]);
-            var_dump($s[0], $sequences_vehicle_0, $s[1], $sequences_vehicle_1);exit;
+        $order_ids = array_slice($order_ids, 2);
+        $splits    = self::splits($order_ids);
+
+        $solutions = [];
+        foreach ($splits as $split) {
+            $sequences_vehicle_0 = self::sequences($split[0]);
+            $sequences_vehicle_1 = self::sequences($split[1]);
+
+            $v0 = self::leastCostSequence($sequences_vehicle_0, 0);
+            $v1 = self::leastCostSequence($sequences_vehicle_1, 1);
+
+            $solutions[] = [
+                'duration' => [
+                    'sequence' => [isset($v0['duration']['key']) ? $sequences_vehicle_0[$v0['duration']['key']] : [], isset($v1['duration']['key']) ? $sequences_vehicle_1[$v1['duration']['key']] : []],
+                    'duration' => [$v0['duration']['duration'], $v1['duration']['duration']],
+                    'distance' => [$v0['duration']['distance'], $v1['duration']['distance']],
+                ],
+                'distance' => [
+                    'sequence' => [isset($v0['distance']['key']) ? $sequences_vehicle_0[$v0['distance']['key']] : [], isset($v1['distance']['key']) ? $sequences_vehicle_1[$v1['distance']['key']] : []],
+                    'duration' => [$v0['distance']['duration'], $v1['distance']['duration']],
+                    'distance' => [$v0['distance']['distance'], $v1['distance']['distance']],
+                ],
+            ];
         }
-        var_dump($splits);exit;
+        echo "<pre>";
+        print_r($solutions);
+        echo "</pre>";exit;
 
         $total_duration = [
             0 => 0,
@@ -66,6 +85,62 @@ class Strategy
         $shortest_distance = array_keys($total_distance, min($total_distance));
         var_dump($total_duration, $total_distance, $least_duration, $shortest_distance);
         exit;
+    }
+
+    /**
+     * find out the shortest sequence from given sequences
+     * @param  array $sequences
+     * @param  int 0 or 1, vehicle index
+     * @return array min
+     */
+    public static function leastCostSequence($sequences, $vehicle_index)
+    {
+        $min = [
+            'duration' => [
+                'key'      => null,
+                'duration' => null,
+                'distance' => null,
+            ],
+            'distance' => [
+                'key'      => null,
+                'duration' => null,
+                'distance' => null,
+            ],
+        ];
+        foreach ($sequences as $key => $sequence) {
+            if (empty($sequence)) {
+                continue;
+            }
+            $duration = 0;
+            $distance = 0;
+
+            // vehicle to the 1st point
+            $vehicle_to_1st_point = self::$sub_section_distances['vehicle_' . $vehicle_index][$sequence[0]];
+            $duration += $vehicle_to_1st_point->duration;
+            $duration += $vehicle_to_1st_point->distance;
+
+            $cnt = count($sequence);
+            for ($i = 0; $i < $cnt - 1; $i++) {
+                $sub_distance = self::$sub_section_distances[$sequence[$i]][$sequence[$i + 1]];
+                $duration += $sub_distance->duration;
+                $distance += $sub_distance->distance;
+            }
+            if (!isset($min['duration']['duration']) || $duration < $min['duration']['duration']) {
+                $min['duration'] = [
+                    'key'      => $key,
+                    'duration' => $duration,
+                    'distance' => $distance,
+                ];
+            }
+            if (!isset($min['distance']['duration']) || $distance < $min['distance']['distance']) {
+                $min['distance'] = [
+                    'key'      => $key,
+                    'duration' => $duration,
+                    'distance' => $distance,
+                ];
+            }
+        }
+        return $min;
     }
 
     /**
