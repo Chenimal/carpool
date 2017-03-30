@@ -23,13 +23,10 @@ class Strategy
             return;
         }
         // get all sub-section distances from map api (高德地图),
-        // it needs 2 * count(order_ids) requests, which is kinda expensive
-        // considering make it happen in client side ?
         self::subSectionDistances($order_ids, $vehicles);
 
         // get all possible splits of orders
-        $order_ids = array_slice($order_ids, 2);
-        $splits    = self::splits($order_ids);
+        $splits = self::splits($order_ids);
 
         $solutions = [];
         foreach ($splits as $split) {
