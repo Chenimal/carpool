@@ -20,24 +20,38 @@ class Location
         $span_lng = $map['locations']['north_east'][0] - $base_lng;
         $span_lat = $map['locations']['north_east'][1] - $base_lat;
 
-        $base_url = $map['base_url'] . 'distance?key=' . $map['key'] . '&destination=' . implode(',', $map['locations']['center']);
-
+        $bounds = $map['bounds'];
+        /**
+         * rayCasting algorithm to determine if the point is inside a polygon
+         */
         while (1) {
-            $random_spot = [];
-            // 高德 Api only support up to 100 origins
-            for ($i = 0; $i < 100; $i++) {
-                $random_spot[] = ($base_lng + $span_lng * mt_rand() / mt_getrandmax())
-                    . ',' . ($base_lat + $span_lat * mt_rand() / mt_getrandmax());
-            }
-            $url    = $base_url . '&origins=' . implode('|', $random_spot);
-            $result = self::curlGet($url);
-            if ($result->status != 1) {
-                return false;
-            }
-            foreach ($result->results as $item) {
-                if (!isset($item->info)) {
-                    return explode(',', $random_spot[$item->origin_id + 1]);
+            $random_point = [
+                $base_lng + $span_lng * mt_rand() / mt_getrandmax(),
+                $base_lat + $span_lat * mt_rand() / mt_getrandmax(),
+            ];
+            $flag   = false;
+            $length = count($bounds);
+            for ($i = 0, $j = $length - 1; $i < $length; $j = $i, $i++) {
+                $p1 = $bounds[$j];
+                $p2 = $bounds[$i];
+                // the random point is at bound point
+                if (($random_point[0] == $p1[0] && $random_point[1] == $p1[1]) || $random_point[0] == $p2[0] && $random_point[1] == $p2[1]) {
+                    return $random_point;
                 }
+                if (($random_point[1] > $p1[1] && $random_point[1] <= $p2[1]) || ($random_point[1] > $p2[1] && $random_point[1] <= $p1[1])) {
+                    $x = $p2[0] + ($random_point[1] - $p2[1]) * ($p1[0] - $p2[0]) / ($p1[1] - $p2[1]);
+                    // random_point is on the side
+                    if ($x == $random_point[0]) {
+                        return $random_point;
+                    }
+                    // the ray is intersect with border
+                    if ($x > $random_point[0]) {
+                        $flag = !$flag;
+                    }
+                }
+            }
+            if ($flag) {
+                return $random_point;
             }
         }
     }
