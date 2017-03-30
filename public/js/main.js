@@ -4,29 +4,13 @@ var base_url = 'http://carpool.lalamove.com/',
   orders = {},
   vehicles = {},
   line_arr_a = [],
-  line_arr_b = [];
+  line_arr_b = [],
+  passed_polyline = [];
 
 function initMap() {
   var map = new AMap.Map('container', {
     center: [114.127439, 22.3746645],
     zoom: 11
-  });
-  // draw path
-  var passed_polyline_a = new AMap.Polyline({
-    map: map,
-    // path: lineArr,
-    strokeColor: "#F00",
-    strokeOpacity: 0.8,
-    strokeWeight: 3,
-    // strokeStyle: "solid"
-  });
-  var passed_polyline_b = new AMap.Polyline({
-    map: map,
-    // path: lineArr,
-    strokeColor: "#00A",
-    strokeOpacity: 0.8,
-    strokeWeight: 3,
-    // strokeStyle: "solid"
   });
 
   map.plugin(["AMap.ToolBar"], function() {
@@ -64,8 +48,8 @@ function initMap() {
       vehicles[k].setMap(null);
     });
     vehicles = {};
-    map.remove(passed_polyline_a);
-    map.remove(passed_polyline_b);
+    map.remove(passed_polyline['a']);
+    map.remove(passed_polyline['b']);
   });
 
   /**
@@ -111,24 +95,25 @@ function initMap() {
     }).done(function(data) {
       console.log(data);
       AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
-        vehicles['a'] = new SimpleMarker({
-          iconLabel: 'v1',
-          iconStyle: 'lightgreen',
-          map: map,
-          position: data['a']
+        ['a', 'b'].map(function(k) {
+          vehicles[k] = new SimpleMarker({
+            iconLabel: 'Va',
+            iconStyle: 'lightgreen',
+            map: map,
+            position: data[k]
+          });
+          // draw path
+          passed_polyline[k] = new AMap.Polyline({
+            map: map,
+            // path: lineArr,
+            strokeColor: "#F00",
+            strokeOpacity: 0.8,
+            strokeWeight: 3,
+          });
+          vehicles[k].on('moving', function(e) {
+            passed_polyline[k].setPath(e.passedPath);
+          })
         });
-        vehicles['b'] = new SimpleMarker({
-          iconLabel: 'v2',
-          iconStyle: 'lightgreen',
-          map: map,
-          position: data['b']
-        });
-        vehicles['a'].on('moving', function(e) {
-          passed_polyline_a.setPath(e.passedPath);
-        })
-        vehicles['b'].on('moving', function(e) {
-          passed_polyline_b.setPath(e.passedPath);
-        })
       });
     });;
   }
