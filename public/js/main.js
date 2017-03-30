@@ -54,6 +54,19 @@ function initMap() {
     vehicles['a'].moveAlong(line_arr_a, 10000);
     vehicles['b'].moveAlong(line_arr_b, 10000);
   });
+  $('.start_over').on('click', function() {
+    Object.keys(orders).map(function(k) {
+      orders[k][0].setMap(null);
+      orders[k][1].setMap(null);
+    });
+    orders = {};
+    Object.keys(vehicles).map(function(k) {
+      vehicles[k].setMap(null);
+    });
+    vehicles = {};
+    map.remove(passed_polyline_a);
+    map.remove(passed_polyline_b);
+  });
 
   /**
    * create random order
