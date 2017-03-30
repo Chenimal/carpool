@@ -17,11 +17,26 @@ class Strategy
      * @param  array $vehicles
      * @return 0 or 1 (vehicle index)
      */
-    public static function basic($orders, $vehicles)
+    public static function basic($order_ids, $vehicles)
     {
-        if (empty($orders) || count($vehicles) !== 2) {
+        if (empty($order_ids) || count($vehicles) !== 2) {
             return;
         }
+        // get all sub-section distances from map api (高德地图),
+        // it needs 2 * count(order_ids) requests, which is kinda expensive
+        // considering make it happen in client side ?
+
+        //self::subSectionDistances($order_ids, $vehicles);
+
+        // get all possible splits of orders
+        $splits = self::splits($order_ids);
+        foreach ($splits as $s) {
+            $sequences_vehicle_0 = self::sequences($s[0]);
+            $sequences_vehicle_1 = self::sequences($s[1]);
+            var_dump($s[0], $sequences_vehicle_0, $s[1], $sequences_vehicle_1);exit;
+        }
+        var_dump($splits);exit;
+
         $total_duration = [
             0 => 0,
             1 => 0,
@@ -81,8 +96,7 @@ class Strategy
      */
     public static function sequences($order_ids)
     {
-        $order_ids = array_slice($order_ids, 2);
-        $points    = [];
+        $points = [];
         foreach ($order_ids as $id) {
             $points[] = [$id . '_start', $id . '_end'];
         }
@@ -94,11 +108,12 @@ class Strategy
      * find out all possible distance & duration between sub-sections of orders
      * @param array order_ids
      * @param array vehicles
-     * @return array
+     * @return array of start1 => [end1, end2, end3]
      * e.g. [
-     *    'order1_end'=>[
-     *        'order1_start'=>['distance'=> 100000, 'duration'=>3600],
+     *    'order1_start'=>[
+     *        'order1_end'=>['distance'=> 100000, 'duration'=>3600],
      *        'order2_end'=>['distance'=>4600,'duration'=>600],
+     *        'order2_start'=>['distance'=>7200,'duration'=>800],
      *     ],...
      *  ]
      */
@@ -129,10 +144,17 @@ class Strategy
             }
             $starts_lng_lat[] = $vehicles[0];
             $starts_lng_lat[] = $vehicles[1];
+            $starts[]         = 'vehicle_0';
             $starts[]         = 'vehicle_1';
-            $starts[]         = 'vehicle_2';
             $distances        = Location::distance($starts_lng_lat, $end_lng_lat);
-            $result[$end]     = array_combine($starts, $distances);
+            $to_starts        = array_combine($starts, $distances);
+            // distances got from api is xx_end => xx_start, convert to xx_start => xx_end
+            foreach ($to_starts as $start => $d) {
+                if (!isset($result[$start])) {
+                    $result[$start] = [];
+                }
+                $result[$start][$end] = $d;
+            }
         }
         self::$sub_section_distances = $result;
         return self::$sub_section_distances;

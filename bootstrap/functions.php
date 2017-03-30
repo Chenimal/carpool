@@ -56,7 +56,8 @@ function math_sequence($arr)
  *  but each start point cannot be pointed from its own pair's end point,
  *  since it must first reach start point to pickup, before go to destination, for each order)
  * @param  array $arr e.g. [[elt1_start, elt1_end], [elt2_start,elt2_end]...]
- * @return array e.g. [
+ * @return array of end1 => [start1, start2, start3]
+ *  e.g. [
  *    'order1_end'=>[
  *        'order1_start'
  *        'order2_end'
