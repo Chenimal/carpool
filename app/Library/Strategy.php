@@ -38,11 +38,13 @@ class Strategy
 
             $solutions[] = [
                 'duration' => [
+                    'total'    => $v0['duration']['duration'] + $v1['duration']['duration'],
                     'sequence' => [isset($v0['duration']['key']) ? $sequences_vehicle_0[$v0['duration']['key']] : [], isset($v1['duration']['key']) ? $sequences_vehicle_1[$v1['duration']['key']] : []],
                     'duration' => [$v0['duration']['duration'], $v1['duration']['duration']],
                     'distance' => [$v0['duration']['distance'], $v1['duration']['distance']],
                 ],
                 'distance' => [
+                    'total'    => $v0['distance']['distance'] + $v1['distance']['distance'],
                     'sequence' => [isset($v0['distance']['key']) ? $sequences_vehicle_0[$v0['distance']['key']] : [], isset($v1['distance']['key']) ? $sequences_vehicle_1[$v1['distance']['key']] : []],
                     'duration' => [$v0['distance']['duration'], $v1['distance']['duration']],
                     'distance' => [$v0['distance']['distance'], $v1['distance']['distance']],
@@ -62,30 +64,24 @@ class Strategy
     {
         $min = [
             'duration' => [
+                'total'    => 0,
                 'sequence' => [],
-                'duration' => null,
-                'distance' => null,
+                'duration' => [],
+                'distance' => [],
             ],
             'distance' => [
+                'total'    => 0,
                 'sequence' => [],
-                'duration' => null,
-                'distance' => null,
+                'duration' => [],
+                'distance' => [],
             ],
         ];
         foreach ($solutions as $s) {
-            if (!isset($min['duration']['duration']) || array_sum($s['duration']['duration']) < $min['duration']['duration']) {
-                $min['duration'] = [
-                    'sequence' => $s['duration']['sequence'],
-                    'duration' => $s['duration']['duration'],
-                    'distance' => $s['duration']['distance'],
-                ];
+            if ($s['duration']['total'] != 0 && ($min['duration']['total'] == 0 || $s['duration']['total'] < $min['duration']['total'])) {
+                $min['duration'] = $s['duration'];
             }
-            if (!isset($min['distance']['distance']) || array_sum($s['distance']['distance']) < $min['distance']['distance']) {
-                $min['distance'] = [
-                    'sequence' => $s['distance']['sequence'],
-                    'duration' => $s['distance']['duration'],
-                    'distance' => $s['distance']['distance'],
-                ];
+            if ($s['distance']['total'] != 0 && ($min['distance']['total'] == 0 || $s['distance']['total'] < $min['distance']['total'])) {
+                $min['distance'] = $s['distance'];
             }
         }
         return $min;
@@ -121,7 +117,7 @@ class Strategy
             // vehicle to the 1st point
             $vehicle_to_1st_point = self::$sub_section_distances['vehicle_' . $vehicle_index][$sequence[0]];
             $duration += $vehicle_to_1st_point->duration;
-            $duration += $vehicle_to_1st_point->distance;
+            $distance += $vehicle_to_1st_point->distance;
 
             $cnt = count($sequence);
             for ($i = 0; $i < $cnt - 1; $i++) {
