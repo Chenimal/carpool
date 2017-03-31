@@ -22,15 +22,24 @@ function initMap() {
   $('.create_orders').on('click', function() {
     btns.addClass('disabled');
     removeOrders();
-    var num_orders = 5; //Math.ceil(Math.random() * 5);
-    for (var i = 0; i < num_orders; i++) {
-      createOrder();
-    }
+    var num_orders = 1; //Math.ceil(Math.random() * 5);
+    createOrders(num_orders).done(function() {
+      $('.create_orders, .get_vehicles').removeClass('disabled');
+      if (Object.keys(orders).length > 0 && Object.keys(vehicles).length > 0) {
+        $('.assign_orders').remove('disabled');
+      }
+    })
   });
   $('.get_vehicles').on('click', function() {
     btns.addClass('disabled');
+    removeVehicles();
+    console.log(Object.keys(vehicles), vehicles, 1);
     getVehicles().done(function() {
-      $('.create_orders, .get_vehicles, .assign_orders').removeClass('disabled');
+      console.log(Object.keys(vehicles), vehicles, 2);
+      $('.create_orders, .get_vehicles').removeClass('disabled');
+      if (Object.keys(orders).length > 0 && Object.keys(vehicles).length > 0) {
+        $('.assign_orders').remove('disabled');
+      }
     });
   });
   $('.assign_orders').on('click', function() {
@@ -78,21 +87,36 @@ function initMap() {
   }
 
   /**
+   * create multiple orders and return promise when all finished
+   */
+  function createOrders(num) {
+    var promise = $.Deferred();
+    var remain = num;
+    for (var i = 0; i < num; i++) {
+      createOrder().done(function() {
+        remain--;
+        if (remain <= 0) {
+          promise.resolve();
+        }
+      });
+    }
+    return promise.promise();
+  }
+
+  /**
    * create two random vehicle
    */
   function getVehicles() {
-    Object.keys(vehicles).map(function(k) {
-      vehicles[k].setMap(null);
-    });
-    vehicles = {};
     return $.ajax({
       url: base_url + 'vehicles/random',
       dataType: 'jsonp',
       jsonp: 'jsonp',
     }).done(function(data) {
-      console.log(data);
-      AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
-        ['a', 'b'].map(function(k) {
+      return Object.keys(data).map(function(k) {
+        vehicles[k] = 6;
+      });
+      return AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
+        Object.keys(data).map(function(k) {
           vehicles[k] = new SimpleMarker({
             iconLabel: 'V' + k,
             iconStyle: 'lightgreen',
@@ -104,12 +128,12 @@ function initMap() {
             map: map,
             // path: lineArr,
             strokeColor: "#F00",
-            strokeOpacity: 0.8,
+            strokeOpacity: 0.6,
             strokeWeight: 3,
           });
           vehicles[k].on('moving', function(e) {
             passed_polyline[k].setPath(e.passedPath);
-          })
+          });
         });
       });
     });
