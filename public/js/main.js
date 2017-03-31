@@ -18,13 +18,10 @@ function initMap() {
     map.addControl(new AMap.ToolBar());
   });
 
+  // user interaction
   $('.create_orders').on('click', function() {
     btns.addClass('disabled');
-    Object.keys(orders).map(function(k) {
-      orders[k][0].setMap(null);
-      orders[k][1].setMap(null);
-    });
-    orders = {};
+    removeOrders();
     var num_orders = 5; //Math.ceil(Math.random() * 5);
     for (var i = 0; i < num_orders; i++) {
       createOrder();
@@ -47,19 +44,9 @@ function initMap() {
   });
   $('.start_over').on('click', function() {
     btns.addClass('disabled');
-    Object.keys(orders).map(function(k) {
-      orders[k][0].setMap(null);
-      orders[k][1].setMap(null);
-    });
-    orders = {};
-    Object.keys(vehicles).map(function(k) {
-      vehicles[k].setMap(null);
-    });
-    vehicles = {};
-    Object.keys(passed_polyline).map(function(k) {
-      map.remove(passed_polyline[k]);
-    });
-    passed_polyline = {};
+    removeOrders();
+    removeVehicles();
+    removePassedLine();
   });
 
   /**
@@ -188,4 +175,32 @@ function initMap() {
     });
   }
 
+  /**
+   * remove orders from map
+   */
+  function removeOrders() {
+    Object.keys(orders).map(function(k) {
+      orders[k][0].setMap(null);
+      orders[k][1].setMap(null);
+    });
+    orders = {};
+  }
+  /**
+   * remove vehicles from map
+   */
+  function removeVehicles() {
+    Object.keys(vehicles).map(function(k) {
+      vehicles[k].setMap(null);
+    });
+    vehicles = {};
+  }
+  /**
+   * remove passed line from map
+   */
+  function removePassedLine() {
+    Object.keys(passed_polyline).map(function(k) {
+      map.remove(passed_polyline[k]);
+    });
+    passed_polyline = {};
+  }
 }
