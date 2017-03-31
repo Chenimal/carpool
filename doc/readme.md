@@ -27,8 +27,12 @@
         (The Hong Kong map view has so much ocean covered)
         Mathematically it is equivalent to the question: determine if a point is
         inside/outside a polygon.
+        I use RayCasting method: cast a ray from the point, count the num of
+        intersections of the ray and polygon's borders.
+        If num is odd, it's inside; if num is even, it's outside.
 
-        * 3.1.2
+        See code implementation in `app/Library/Location.php:createRandomAccessibleLocation`.
+        [raycating picture]
 
     * 3.2 Assign orders(find the best paths)
         1. To split orders
