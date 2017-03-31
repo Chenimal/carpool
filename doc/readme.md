@@ -1,6 +1,6 @@
 # Carpool prototype
 
-### 1.0 Intro
+### 1. Intro
 
     To view the demo, visit [ali-cloud/index.html]. To download the code, just click
     the green button at upper-right corner.
@@ -10,35 +10,43 @@
     Secondly for each possible subset of orders, find all possible sequences of
     location points(vehicle locations, pickup locations& delivery locations),
     and get the best sequence based on certain criteria(shortest time or duration).
-    Then for each possible partitioning, we have a solution.
+    Then for each possible partitioning, it has a solution.
     At last we comepare all partitionings, and get the best one.
 
-### 2.0 Assumptions(todo)
+### 2. Assumptions(todo)
 
     * Orders:
         1. Each order is randomly created(Inside Hong Kong main island).
         Locations in the rest islands are excluded.
 
-### 3.0 Algotithm Illustrations(todo)
+### 3. Algotithm Explainations(todo)
 
-    * To create orders
+    * 3.1 To create random orders
 
-    * To split orders
-    * To find best sequences
+        The key is making sure the random locations are on the land rather than ocean.
+        (The Hong Kong map view has so much ocean covered)
+        Mathematically it is equivalent to the question: determine if a point is
+        inside/outside a polygon.
 
-### 4.0 API(todo)
+        * 3.1.2
 
-### 5.0 Testing(todo)
+    * 3.2 Assign orders(find the best paths)
+        1. To split orders
+        2. To find best sequences
+
+### 4. API(todo)
+
+### 5. Testing(todo)
 
     `phpunit tests/CreateOrderTest.php --filter testSingleRequest`
     `phpunit tests/CreateOrderTest.php --filter testLoopRequest`
 
-### 6.0 Performances(todo)
+### 6. Performances(todo)
 
     Through self-testing, the APIs took around XXms,
     and less than XXms on my local machine, which is nice.
 
-### 7.0 Tech Specs
+### 7. Tech Specs
 
     * PHP 5.6
     * Lumen 5.4
