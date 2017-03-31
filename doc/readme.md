@@ -4,10 +4,12 @@
 
     To demonstrate, visit [ali-cloud/index.html].
 
-    * Algotithms
-        * To generate radom location order:
-            1. I only use the main
-    * How to use
+    The basic idea is that for given orders(<=5), find all possible ways of spliting
+    them into two subsets(two vehicles). Then for each possible subset(orders), find
+    all possible sequences of location points(vehicle locations, pickup locations& delivery locations),
+    and get the best sequence based on certain criteria(shortest time or duration).
+    Then for each possible partitioning, we have a solution. At last we comepare all
+    partitionings, find the best one.
 
 ### 2.0 Assumptions(todo)
 
@@ -15,7 +17,7 @@
         1. Each order is randomly created(Inside Hong Kong main island).
         Locations in the rest islands are excluded.
 
-### 3.0 Algotithms(todo)
+### 3.0 Algotithm Illustrations(todo)
 
     * To create orders
     * To split orders
