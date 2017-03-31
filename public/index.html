@@ -2,6 +2,11 @@
 <html lang="en">
     <head>
         <title>Carpool Demostration</title>
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <style>
           html, body {
             height: 100%;
@@ -15,14 +20,29 @@
     </head>
     <body>
         <div id="container"></div>
-        <br>
-        <button class='create_orders'>Create random orders</button>
-        <button class='get_vehicles'>Get vehicles</button>
-        <button class='assign_orders'>Assign orders</button>
-        <button class='draw_paths'>Draw paths(lineal)</button>
-        <button class='start_over'>Start over</button>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="btn-group btn-group-justified" role="group" aria-label="...">
+              <div class="btn-group" role="group">
+                <button type="button" class="create_orders btn btn-default">New orders</button>
+              </div>
+              <div class="btn-group" role="group">
+                <button type="button" class="get_vehicles btn btn-default">Get vehicles</button>
+              </div>
+              <div class="btn-group" role="group">
+                <button type="button" class="assign_orders disabled btn btn-default">Assign orders</button>
+              </div>
+              <div class="btn-group" role="group">
+                <button type="button" class="draw_paths disabled btn btn-default">Animation(lineal)</button>
+              </div>
+              <div class="btn-group" role="group">
+                <button type="button" class="start_over disabled btn btn-default">Start over</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
     </body>
-    <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://webapi.amap.com/maps?v=1.3&amp;key=f234c763f0ee2c62a08c59371845c8d7&callback=initMap"></script>
     <script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.4"></script>
     <script src="js/main.js"></script>
