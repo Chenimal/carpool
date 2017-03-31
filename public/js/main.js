@@ -25,6 +25,7 @@ function initMap() {
   $('.create_orders').on('click', function() {
     btns.addClass('disabled');
     removeOrders();
+    removePassedLine();
     var num_orders = 1; //Math.ceil(Math.random() * 5);
     createOrders(num_orders).done(function() {
       has_orders = true;
@@ -48,6 +49,7 @@ function initMap() {
   });
   $('.assign_orders').on('click', function() {
     btns.addClass('disabled');
+    removePassedLine();
     assignOrders().done(function() {
       btns.removeClass('disabled');
       vehicles['a'].moveAlong(line_arr_a, 10000);
@@ -123,14 +125,6 @@ function initMap() {
             map: map,
             position: data[k]
           });
-          // draw path
-          passed_polyline[k] = new AMap.Polyline({
-            map: map,
-            // path: lineArr,
-            strokeColor: "#F00",
-            strokeOpacity: 0.6,
-            strokeWeight: 3,
-          });
           vehicles[k].on('moving', function(e) {
             passed_polyline[k].setPath(e.passedPath);
           });
@@ -176,6 +170,16 @@ function initMap() {
         line_arr_b.push(orders[index[0]][index[1] == 'start' ? 0 : 1].getPosition());
       }
       console.log(line_arr_b);
+      // draw path
+      ['a', 'b'].map(function(k) {
+        passed_polyline[k] = new AMap.Polyline({
+          map: map,
+          // path: lineArr,
+          strokeColor: "#F00",
+          strokeOpacity: 0.6,
+          strokeWeight: 3,
+        });
+      });
       /*AMap.service('AMap.Driving', function() { //回调函数
         //实例化Driving
         if (line_arr_a.length > 1) {
@@ -226,7 +230,7 @@ function initMap() {
    */
   function removePassedLine() {
     Object.keys(passed_polyline).map(function(k) {
-      map.remove(passed_polyline[k]);
+      passed_polyline[k].setMap(null);
     });
     passed_polyline = {};
     has_assigned = false;

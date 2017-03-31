@@ -24,7 +24,6 @@
     * 3.1 To create random orders
 
         The key is making sure the random locations are on the land rather than ocean.
-        (The Hong Kong map view has so much ocean covered)
         Mathematically it is equivalent to the question: determine if a point is
         inside/outside a polygon.
         I use RayCasting method: cast a ray from the point, count the num of
@@ -36,7 +35,7 @@
 
     * 3.2 Assign orders(find the best paths)
         1. To split orders
-        2. To find best sequences
+        2. To find all sequences
 
 ### 4. API(todo)
 
