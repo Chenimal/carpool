@@ -4,6 +4,8 @@ var btns = $('.btn'),
   cur_color = 0,
   orders = {},
   vehicles = {},
+  has_orders = false,
+  has_vehicles = false,
   line_arr_a = [],
   line_arr_b = [],
   passed_polyline = {};
@@ -24,21 +26,21 @@ function initMap() {
     removeOrders();
     var num_orders = 1; //Math.ceil(Math.random() * 5);
     createOrders(num_orders).done(function() {
+      has_orders = true;
       $('.create_orders, .get_vehicles').removeClass('disabled');
-      if (Object.keys(orders).length > 0 && Object.keys(vehicles).length > 0) {
-        $('.assign_orders').remove('disabled');
+      if (has_orders && has_vehicles) {
+        $('.assign_orders').removeClass('disabled');
       }
     })
   });
   $('.get_vehicles').on('click', function() {
     btns.addClass('disabled');
     removeVehicles();
-    console.log(Object.keys(vehicles), vehicles, 1);
     getVehicles().done(function() {
-      console.log(Object.keys(vehicles), vehicles, 2);
+      has_vehicles = true;
       $('.create_orders, .get_vehicles').removeClass('disabled');
-      if (Object.keys(orders).length > 0 && Object.keys(vehicles).length > 0) {
-        $('.assign_orders').remove('disabled');
+      if (has_orders && has_vehicles) {
+        $('.assign_orders').removeClass('disabled');
       }
     });
   });
@@ -112,9 +114,6 @@ function initMap() {
       dataType: 'jsonp',
       jsonp: 'jsonp',
     }).done(function(data) {
-      return Object.keys(data).map(function(k) {
-        vehicles[k] = 6;
-      });
       return AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
         Object.keys(data).map(function(k) {
           vehicles[k] = new SimpleMarker({
@@ -207,6 +206,7 @@ function initMap() {
       orders[k][0].setMap(null);
       orders[k][1].setMap(null);
     });
+    has_orders = false;
     orders = {};
   }
   /**
@@ -216,6 +216,7 @@ function initMap() {
     Object.keys(vehicles).map(function(k) {
       vehicles[k].setMap(null);
     });
+    has_vehicles = false;
     vehicles = {};
   }
   /**
