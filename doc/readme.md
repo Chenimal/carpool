@@ -26,4 +26,11 @@
     `phpunit tests/CreateOrderTest.php --filter testSingleRequest`
     `phpunit tests/CreateOrderTest.php --filter testLoopRequest`
 
-### 6.0
+### 6.0 Tech Specifics
+
+    * PHP 5.6
+    * Lumen 5.4
+    * Mysql
+    * Gaode map Api(高德地图)
+    * jQuery
+    * Server: Ubuntu 16.x(Ali cloud server)
