@@ -6,6 +6,7 @@ var btns = $('.btn'),
   vehicles = {},
   has_orders = false,
   has_vehicles = false,
+  has_assigned = false,
   line_arr_a = [],
   line_arr_b = [],
   passed_polyline = {};
@@ -36,6 +37,7 @@ function initMap() {
   $('.get_vehicles').on('click', function() {
     btns.addClass('disabled');
     removeVehicles();
+    removePassedLine();
     getVehicles().done(function() {
       has_vehicles = true;
       $('.create_orders, .get_vehicles').removeClass('disabled');
@@ -46,15 +48,14 @@ function initMap() {
   });
   $('.assign_orders').on('click', function() {
     btns.addClass('disabled');
-    assignOrders();
-  });
-  $('.draw_paths').on('click', function() {
-    btns.addClass('disabled');
-    vehicles['a'].moveAlong(line_arr_a, 10000);
-    vehicles['b'].moveAlong(line_arr_b, 10000);
+    assignOrders().done(function() {
+      btns.removeClass('disabled');
+      vehicles['a'].moveAlong(line_arr_a, 10000);
+      vehicles['b'].moveAlong(line_arr_b, 10000);
+    });
   });
   $('.start_over').on('click', function() {
-    btns.addClass('disabled');
+    $('start_over, .assign_orders').addClass('disabled');
     removeOrders();
     removeVehicles();
     removePassedLine();
@@ -149,12 +150,13 @@ function initMap() {
         return [position.lng, position.lat];
       })
     };
-    $.ajax({
+    return $.ajax({
       url: base_url + 'orders/assign',
       dataType: 'jsonp',
       jsonp: 'jsonp',
       data: data
     }).done(function(solution) {
+      has_assigned = true;
       console.log(solution);
       var criteria = 'duration';
       var sequence = solution[criteria]['sequence'];
@@ -227,5 +229,6 @@ function initMap() {
       map.remove(passed_polyline[k]);
     });
     passed_polyline = {};
+    has_assigned = false;
   }
 }
