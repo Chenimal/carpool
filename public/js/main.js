@@ -1,5 +1,4 @@
-var btns = $('.btn'),
-  base_url = 'http://carpool.lalamove.com/',
+var base_url = 'http://carpool.lalamove.com/',
   order_colors = ['blue', 'orange', 'green', 'red', 'orchid'],
   cur_order_color = 0,
   line_colors = {
@@ -20,6 +19,7 @@ var btns = $('.btn'),
   animation_type = 'linear';
 
 function initMap() {
+  var btns = $('.btn');
   var map = new AMap.Map('container', {
     center: [114.127439, 22.3746645],
     zoom: 11
