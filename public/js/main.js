@@ -8,6 +8,7 @@ var btns = $('.btn'),
   },
   orders = {},
   vehicles = {},
+  original_vehicle_locations = {},
   has_orders = false,
   has_vehicles = false,
   has_assigned = false,
@@ -30,7 +31,7 @@ function initMap() {
     btns.prop('disabled', true);
     removeOrders();
     removePassedLine();
-    var num_orders = 4; //Math.ceil(Math.random() * 5);
+    var num_orders = 1; //Math.ceil(Math.random() * 5);
     createOrders(num_orders).done(function() {
       has_orders = true;
       $('.create_orders, .get_vehicles').prop('disabled', false);
@@ -77,7 +78,7 @@ function initMap() {
       dataType: 'jsonp',
       jsonp: 'jsonp',
     }).done(function(res) {
-      console.log(res);
+      console.log('Order:', res);
       AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
         var start = new SimpleMarker({
           iconLabel: 'S',
@@ -122,6 +123,7 @@ function initMap() {
       dataType: 'jsonp',
       jsonp: 'jsonp',
     }).done(function(data) {
+      console.log('Vehicles:', data);
       return AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
         Object.keys(data).map(function(k) {
           vehicles[k] = new SimpleMarker({
@@ -130,6 +132,7 @@ function initMap() {
             map: map,
             position: data[k]
           });
+          original_vehicle_locations[k] = vehicles[k].getPosition();
           vehicles[k].on('moving', function(e) {
             passed_polyline[k].setPath(e.passedPath);
           });
@@ -151,7 +154,7 @@ function initMap() {
     var data = {
       order_ids: Object.keys(orders),
       vehicles: Object.keys(vehicles).map(function(k) {
-        var position = vehicles[k].getPosition();
+        var position = original_vehicle_locations[k];
         return [position.lng, position.lat];
       })
     };
@@ -162,25 +165,25 @@ function initMap() {
       data: data
     }).done(function(solution) {
       has_assigned = true;
-      console.log(solution);
+      console.log('Assign:', solution);
       var criteria = 'duration';
       var sequence = solution[criteria]['sequence'];
       // vehicle_a
       line_arr['a'] = [];
-      line_arr['a'].push(vehicles['a'].getPosition());
+      line_arr['a'].push(original_vehicle_locations['a']);
       for (var i = 0; i < sequence[0].length; i++) {
         var index = sequence[0][i].split('_');
         line_arr['a'].push(orders[index[0]][index[1] == 'start' ? 0 : 1].getPosition());
       }
-      console.log(line_arr['a']);
+      console.log('Assigned to a: ', line_arr['a']);
       // vehicle_b
       line_arr['b'] = [];
-      line_arr['b'].push(vehicles['b'].getPosition());
+      line_arr['b'].push(original_vehicle_locations['b']);
       for (var i = 0; i < sequence[1].length; i++) {
         var index = sequence[1][i].split('_');
         line_arr['b'].push(orders[index[0]][index[1] == 'start' ? 0 : 1].getPosition());
       }
-      console.log(line_arr['b']);
+      console.log('Assigned to b:', line_arr['b']);
       // draw path
       ['a', 'b'].map(function(k) {
         passed_polyline[k] = new AMap.Polyline({
