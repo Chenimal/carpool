@@ -23,32 +23,32 @@ function initMap() {
 
   // user interaction
   $('.create_orders').on('click', function() {
-    btns.addClass('disabled');
+    btns.prop('disabled', true);
     removeOrders();
     removePassedLine();
     var num_orders = 1; //Math.ceil(Math.random() * 5);
     createOrders(num_orders).done(function() {
       has_orders = true;
-      $('.create_orders, .get_vehicles').removeClass('disabled');
+      $('.create_orders, .get_vehicles').prop('disabled', false);
       if (has_orders && has_vehicles) {
-        $('.assign_orders').removeClass('disabled');
+        $('.assign_orders').prop('disabled', false);
       }
     })
   });
   $('.get_vehicles').on('click', function() {
-    btns.addClass('disabled');
+    btns.prop('disabled', true);
     removeVehicles();
     removePassedLine();
     getVehicles().done(function() {
       has_vehicles = true;
-      $('.create_orders, .get_vehicles').removeClass('disabled');
+      $('.create_orders, .get_vehicles').prop('disabled', false);
       if (has_orders && has_vehicles) {
-        $('.assign_orders').removeClass('disabled');
+        $('.assign_orders').prop('disabled', false);
       }
     });
   });
   $('.assign_orders').on('click', function() {
-    btns.addClass('disabled');
+    btns.prop('disabled', true);
     removePassedLine();
     assignOrders().done(function() {
       ['a', 'b'].map(function(k) {
@@ -58,7 +58,7 @@ function initMap() {
     });
   });
   $('.start_over').on('click', function() {
-    $('start_over, .assign_orders').addClass('disabled');
+    $('start_over, .assign_orders').prop('disabled', true);
     removeOrders();
     removeVehicles();
     removePassedLine();
@@ -132,7 +132,7 @@ function initMap() {
           vehicles[k].on('moveend', function(e) {
             is_moving--;
             if (is_moving == 0) {
-              btns.removeClass('disabled');
+              btns.prop('disabled', false);
             }
           });
         });
