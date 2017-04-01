@@ -168,24 +168,16 @@ function initMap() {
       console.log('Assign:', solution);
       var criteria = 'duration';
       var sequence = solution[criteria]['sequence'];
-      // vehicle_a
-      line_arr['a'] = [];
-      line_arr['a'].push(original_vehicle_locations['a']);
-      for (var i = 0; i < sequence[0].length; i++) {
-        var index = sequence[0][i].split('_');
-        line_arr['a'].push(orders[index[0]][index[1] == 'start' ? 0 : 1].getPosition());
-      }
-      console.log('Assigned to a: ', line_arr['a']);
-      // vehicle_b
-      line_arr['b'] = [];
-      line_arr['b'].push(original_vehicle_locations['b']);
-      for (var i = 0; i < sequence[1].length; i++) {
-        var index = sequence[1][i].split('_');
-        line_arr['b'].push(orders[index[0]][index[1] == 'start' ? 0 : 1].getPosition());
-      }
-      console.log('Assigned to b:', line_arr['b']);
-      // draw path
       ['a', 'b'].map(function(k) {
+        var v = k == 'a' ? 0 : 1;
+        line_arr[k] = [];
+        line_arr[k].push(original_vehicle_locations[k]);
+        for (var i = 0; i < sequence[v].length; i++) {
+          var index = sequence[v][i].split('_');
+          line_arr[k].push(orders[index[0]][index[1] == 'start' ? 0 : 1].getPosition());
+        }
+        console.log('Assigned to ' + k + ': ', line_arr[k]);
+        // draw path
         passed_polyline[k] = new AMap.Polyline({
           map: map,
           // path: lineArr,
