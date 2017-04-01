@@ -196,38 +196,37 @@ function initMap() {
           strokeOpacity: 0.6,
           strokeWeight: 3,
         });
-
+        if (line_arr[k].length <= 1) {
+          return;
+        }
         if (animation_type == 'linear') {
           vehicles[k].moveAlong(line_arr[k], 10000);
           is_moving++;
         } else {
           AMap.service('AMap.Driving', function() {
-            //实例化Driving
-            if (line_arr[k].length > 1) {
-              var driving = new AMap.Driving({
-                map: map,
-                city: '香港'
-              });
-              driving.search(line_arr[k][0], line_arr[k][line_arr[k].length - 1], {
-                waypoints: line_arr[k].slice(1, -1)
-              }, function(status, data) {
-                if (status != 'complete') {
-                  return;
-                }
-                real_routes[k] = [];
-                for (var r = 0; r < data.routes.length; r++) {
-                  var route = data.routes[r];
-                  for (var s = 0; s < route.steps.length; s++) {
-                    var step = route.steps[s];
-                    for (var p = 0; p < step.path.length; p++) {
-                      real_routes[k].push(step.path[p]);
-                    }
+            var driving = new AMap.Driving({
+              map: map,
+              city: '香港'
+            });
+            driving.search(line_arr[k][0], line_arr[k][line_arr[k].length - 1], {
+              waypoints: line_arr[k].slice(1, -1)
+            }, function(status, data) {
+              if (status != 'complete') {
+                return;
+              }
+              real_routes[k] = [];
+              for (var r = 0; r < data.routes.length; r++) {
+                var route = data.routes[r];
+                for (var s = 0; s < route.steps.length; s++) {
+                  var step = route.steps[s];
+                  for (var p = 0; p < step.path.length; p++) {
+                    real_routes[k].push(step.path[p]);
                   }
                 }
-                vehicles[k].moveAlong(real_routes[k], 10000);
-                is_moving++;
-              });
-            }
+              }
+              vehicles[k].moveAlong(real_routes[k], 10000);
+              is_moving++;
+            });
           });
         }
       });
