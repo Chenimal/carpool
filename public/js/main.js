@@ -14,8 +14,10 @@ var btns = $('.btn'),
   has_assigned = false,
   is_moving = 0,
   line_arr = {},
+  real_routes = {},
   passed_polyline = {},
-  assign_criteria = 'duration';
+  assign_criteria = 'duration',
+  animation_type = 'linear';
 
 function initMap() {
   var map = new AMap.Map('container', {
@@ -55,12 +57,7 @@ function initMap() {
     btns.prop('disabled', true);
     $('.control_options').addClass('hide');
     removePassedLine();
-    assignOrders().done(function() {
-      ['a', 'b'].map(function(k) {
-        is_moving++;
-        vehicles[k].moveAlong(line_arr[k], 10000);
-      });
-    });
+    assignOrders();
   });
   $('.start_over').on('click', function() {
     $('.start_over, .assign_orders').prop('disabled', true);
@@ -71,7 +68,10 @@ function initMap() {
   });
   $('.criteria').on('change', function() {
     assign_criteria = $(this).filter(':checked').val();
-  })
+  });
+  $('.animation_type').on('change', function() {
+    animation_type = $(this).filter(':checked').val();
+  });
 
   /*********************************
    * functions below
@@ -145,10 +145,13 @@ function initMap() {
             passed_polyline[k].setPath(e.passedPath);
           });
           vehicles[k].on('moveend', function(e) {
-            is_moving--;
-            if (is_moving == 0) {
-              btns.prop('disabled', false);
-              $('.control_options').removeClass('hide');
+            var xl = animation_type == 'linear' ? line_arr : real_routes;
+            if (vehicles[k].getPosition() == xl[k][xl[k].length - 1]) {
+              is_moving--;
+              if (is_moving <= 0) {
+                btns.prop('disabled', false);
+                $('.control_options').removeClass('hide');
+              }
             }
           });
         });
@@ -193,33 +196,40 @@ function initMap() {
           strokeOpacity: 0.6,
           strokeWeight: 3,
         });
-        // real route
-        AMap.service('AMap.Driving', function() {
-          //实例化Driving
-          if (line_arr[k].length > 1) {
-            var driving = new AMap.Driving({
-              map: map,
-              city: '香港'
-            });
-            driving.search(line_arr[k][0], line_arr[k][line_arr[k].length - 1], {}, function(status, data) {
-              console.log(status, data);
-              if (status != 'complete') {
-                return;
-              }
-              var real_route = [];
-              for (var r = 0; r < data.routes.length; r++) {
-                var route = data.routes[r];
-                for (var s = 0; s < route.steps.length; s++) {
-                  var step = route.steps[s];
-                  for (var p = 0; p < step.path.length; p++) {
-                    real_route.push(step.path[p]);
+
+        if (animation_type == 'linear') {
+          vehicles[k].moveAlong(line_arr[k], 10000);
+          is_moving++;
+        } else {
+          AMap.service('AMap.Driving', function() {
+            //实例化Driving
+            if (line_arr[k].length > 1) {
+              var driving = new AMap.Driving({
+                map: map,
+                city: '香港'
+              });
+              driving.search(line_arr[k][0], line_arr[k][line_arr[k].length - 1], {
+                waypoints: line_arr[k].slice(1, -1)
+              }, function(status, data) {
+                if (status != 'complete') {
+                  return;
+                }
+                real_routes[k] = [];
+                for (var r = 0; r < data.routes.length; r++) {
+                  var route = data.routes[r];
+                  for (var s = 0; s < route.steps.length; s++) {
+                    var step = route.steps[s];
+                    for (var p = 0; p < step.path.length; p++) {
+                      real_routes[k].push(step.path[p]);
+                    }
                   }
                 }
-              }
-              console.log(real_route);
-            });
-          }
-        });
+                vehicles[k].moveAlong(real_routes[k], 10000);
+                is_moving++;
+              });
+            }
+          });
+        }
       });
     });
   }
