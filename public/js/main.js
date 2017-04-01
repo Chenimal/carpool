@@ -193,28 +193,34 @@ function initMap() {
           strokeOpacity: 0.6,
           strokeWeight: 3,
         });
+        // real route
+        AMap.service('AMap.Driving', function() {
+          //实例化Driving
+          if (line_arr[k].length > 1) {
+            var driving = new AMap.Driving({
+              map: map,
+              city: '香港'
+            });
+            driving.search(line_arr[k][0], line_arr[k][line_arr[k].length - 1], {}, function(status, data) {
+              console.log(status, data);
+              if (status != 'complete') {
+                return;
+              }
+              var real_route = [];
+              for (var r = 0; r < data.routes.length; r++) {
+                var route = data.routes[r];
+                for (var s = 0; s < route.steps.length; s++) {
+                  var step = route.steps[s];
+                  for (var p = 0; p < step.path.length; p++) {
+                    real_route.push(step.path[p]);
+                  }
+                }
+              }
+              console.log(real_route);
+            });
+          }
+        });
       });
-      /*AMap.service('AMap.Driving', function() { //回调函数
-        //实例化Driving
-        if (line_arr_a.length > 1) {
-          var driving_a = new AMap.Driving({
-            map: map,
-            city: '香港'
-          });
-          driving_a.search(line_arr_a[0], line_arr_a[line_arr_a.length - 1], {}, function(status, code) {
-            console.log(status, code);
-          });
-        }
-        if (line_arr_b.length > 1) {
-          var driving_b = new AMap.Driving({
-            map: map,
-            city: '香港'
-          });
-          driving_b.search(line_arr_b[0], line_arr_b[line_arr_b.length - 1], {}, function(status, code) {
-            console.log(status, code);
-          });
-        }
-      });*/
     });
   }
 
