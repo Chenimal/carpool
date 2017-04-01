@@ -23,10 +23,6 @@ function initMap() {
     zoom: 11
   });
 
-  map.plugin(["AMap.ToolBar"], function() {
-    map.addControl(new AMap.ToolBar());
-  });
-
   // user interaction
   $('.create_orders').on('click', function() {
     btns.prop('disabled', true);
@@ -38,6 +34,7 @@ function initMap() {
       $('.create_orders, .get_vehicles').prop('disabled', false);
       if (has_orders && has_vehicles) {
         $('.assign_orders').prop('disabled', false);
+        $('.control_options').removeClass('hide');
       }
     })
   });
@@ -50,11 +47,13 @@ function initMap() {
       $('.create_orders, .get_vehicles').prop('disabled', false);
       if (has_orders && has_vehicles) {
         $('.assign_orders').prop('disabled', false);
+        $('.control_options').removeClass('hide');
       }
     });
   });
   $('.assign_orders').on('click', function() {
     btns.prop('disabled', true);
+    $('.control_options').addClass('hide');
     removePassedLine();
     assignOrders().done(function() {
       ['a', 'b'].map(function(k) {
@@ -64,7 +63,8 @@ function initMap() {
     });
   });
   $('.start_over').on('click', function() {
-    $('start_over, .assign_orders').prop('disabled', true);
+    $('.start_over, .assign_orders').prop('disabled', true);
+    $('.control_options').addClass('hide');
     removeOrders();
     removeVehicles();
     removePassedLine();
@@ -144,6 +144,7 @@ function initMap() {
             is_moving--;
             if (is_moving == 0) {
               btns.prop('disabled', false);
+              $('.control_options').removeClass('hide');
             }
           });
         });
