@@ -50,16 +50,6 @@ class OrdersController extends Controller
     }
 
     /**
-     * remove order on the map
-     * @param int order_id
-     * @return [type] [description]
-     */
-    public function remove($order_id)
-    {
-
-    }
-
-    /**
      * assign an order to a specific vehicle
      * @param  int/array $order_ids
      * @param  array[[vehicle_1_lng,vehicle_1_lat],[vehicle_2_lng,vehicle_2_lat]]
@@ -71,6 +61,23 @@ class OrdersController extends Controller
         $vehicles  = $request->input('vehicles');
 
         $result   = Strategy::basic($order_ids, $vehicles);
+        $response = response()->json($result);
+
+        // jsonp
+        if ($request->input('jsonp')) {
+            $response->setCallback($request->input('jsonp'));
+        }
+        return $response;
+    }
+
+    /**
+     * finish order and remove from the map
+     * @param int order_id
+     * @return [type] [description]
+     */
+    public function finish($order_id)
+    {
+        $result   = Order::finish($order_id);
         $response = response()->json($result);
 
         // jsonp

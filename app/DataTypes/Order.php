@@ -91,13 +91,20 @@ class Order
     }
 
     /**
-     * remove order
+     * finish order
      * @param  int order_id
      * @return  boolean
      */
-    public function takeOrder($order_id)
+    public function finish($order_id)
     {
-        // todo: db related
+        if (empty($order_id)) {
+            return false;
+        }
+        return DB::table('orders')
+            ->where('id', $order_id)
+            ->update([
+                'status' => 1,
+            ]);
     }
 
 }

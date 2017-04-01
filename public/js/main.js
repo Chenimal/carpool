@@ -73,6 +73,10 @@ function initMap() {
     assign_criteria = $(this).filter(':checked').val();
   })
 
+  /*********************************
+   * functions below
+   * *******************************/
+
   /**
    * create random order
    */
@@ -102,7 +106,7 @@ function initMap() {
   }
 
   /**
-   * create multiple orders and return promise when all finished
+   * create multiple orders and return promise, will be resolved when all finished
    */
   function createOrders(num) {
     var promise = $.Deferred();
@@ -225,6 +229,29 @@ function initMap() {
     has_orders = false;
     orders = {};
   }
+
+  /**
+   * remove multiple orders and resolve promise when all finished
+   */
+  function finishOrders(orders) {
+    var promise = $.Deferred();
+    var order_ids = Object.keys(orders);
+    var remain = order_ids.length;
+    for (var i = 0; i < num; i++) {
+      $.ajax({
+        url: base_url + 'orders/finish/' + order_ids[i],
+        dataType: 'jsonp',
+        jsonp: 'jsonp',
+      }).done(function() {
+        remain--;
+        if (remain <= 0) {
+          promise.resolve();
+        }
+      });
+    }
+    return promise.promise();
+  }
+
   /**
    * remove vehicles from map
    */
