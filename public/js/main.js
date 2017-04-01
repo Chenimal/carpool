@@ -7,8 +7,8 @@ var btns = $('.btn'),
   has_orders = false,
   has_vehicles = false,
   has_assigned = false,
-  line_arr_a = [],
-  line_arr_b = [],
+  is_moving = 0,
+  line_arr = {},
   passed_polyline = {};
 
 function initMap() {
@@ -51,9 +51,10 @@ function initMap() {
     btns.addClass('disabled');
     removePassedLine();
     assignOrders().done(function() {
-      btns.removeClass('disabled');
-      vehicles['a'].moveAlong(line_arr_a, 10000);
-      vehicles['b'].moveAlong(line_arr_b, 10000);
+      ['a', 'b'].map(function(k) {
+        is_moving++;
+        vehicles[k].moveAlong(line_arr[k], 10000);
+      });
     });
   });
   $('.start_over').on('click', function() {
@@ -128,6 +129,12 @@ function initMap() {
           vehicles[k].on('moving', function(e) {
             passed_polyline[k].setPath(e.passedPath);
           });
+          vehicles[k].on('moveend', function(e) {
+            is_moving--;
+            if (is_moving == 0) {
+              btns.removeClass('disabled');
+            }
+          });
         });
       });
     });
@@ -155,21 +162,21 @@ function initMap() {
       var criteria = 'duration';
       var sequence = solution[criteria]['sequence'];
       // vehicle_a
-      line_arr_a = [];
-      line_arr_a.push(vehicles['a'].getPosition());
+      line_arr['a'] = [];
+      line_arr['a'].push(vehicles['a'].getPosition());
       for (var i = 0; i < sequence[0].length; i++) {
         var index = sequence[0][i].split('_');
-        line_arr_a.push(orders[index[0]][index[1] == 'start' ? 0 : 1].getPosition());
+        line_arr['a'].push(orders[index[0]][index[1] == 'start' ? 0 : 1].getPosition());
       }
-      console.log(line_arr_a);
+      console.log(line_arr['a']);
       // vehicle_b
-      line_arr_b = [];
-      line_arr_b.push(vehicles['b'].getPosition());
+      line_arr['b'] = [];
+      line_arr['b'].push(vehicles['b'].getPosition());
       for (var i = 0; i < sequence[1].length; i++) {
         var index = sequence[1][i].split('_');
-        line_arr_b.push(orders[index[0]][index[1] == 'start' ? 0 : 1].getPosition());
+        line_arr['b'].push(orders[index[0]][index[1] == 'start' ? 0 : 1].getPosition());
       }
-      console.log(line_arr_b);
+      console.log(line_arr['b']);
       // draw path
       ['a', 'b'].map(function(k) {
         passed_polyline[k] = new AMap.Polyline({
