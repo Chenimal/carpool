@@ -1,7 +1,11 @@
 var btns = $('.btn'),
   base_url = 'http://carpool.lalamove.com/',
   order_colors = ['blue', 'orange', 'green', 'red', 'orchid'],
-  cur_color = 0,
+  cur_order_color = 0,
+  line_colors = {
+    'a': '#F00',
+    'b': '#00A',
+  },
   orders = {},
   vehicles = {},
   has_orders = false,
@@ -26,7 +30,7 @@ function initMap() {
     btns.prop('disabled', true);
     removeOrders();
     removePassedLine();
-    var num_orders = 1; //Math.ceil(Math.random() * 5);
+    var num_orders = 4; //Math.ceil(Math.random() * 5);
     createOrders(num_orders).done(function() {
       has_orders = true;
       $('.create_orders, .get_vehicles').prop('disabled', false);
@@ -77,13 +81,13 @@ function initMap() {
       AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
         var start = new SimpleMarker({
           iconLabel: 'S',
-          iconStyle: order_colors[cur_color % 5],
+          iconStyle: order_colors[cur_order_color % 5],
           map: map,
           position: res.pickup_lng_lat
         });
         var end = new SimpleMarker({
           iconLabel: 'E',
-          iconStyle: order_colors[cur_color++ % 5],
+          iconStyle: order_colors[cur_order_color++ % 5],
           map: map,
           position: res.dropoff_lng_lat
         });
@@ -182,7 +186,7 @@ function initMap() {
         passed_polyline[k] = new AMap.Polyline({
           map: map,
           // path: lineArr,
-          strokeColor: "#F00",
+          strokeColor: line_colors[k],
           strokeOpacity: 0.6,
           strokeWeight: 3,
         });
