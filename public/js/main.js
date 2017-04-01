@@ -30,7 +30,7 @@ function initMap() {
     btns.prop('disabled', true);
     removeOrders();
     removePassedLine();
-    var num_orders = 1; //Math.ceil(Math.random() * 5);
+    var num_orders = 4; //Math.ceil(Math.random() * 5);
     createOrders(num_orders).done(function() {
       has_orders = true;
       $('.create_orders, .get_vehicles').prop('disabled', false);
@@ -65,6 +65,7 @@ function initMap() {
     removeOrders();
     removeVehicles();
     removePassedLine();
+    map.clearMap();
   });
   $('.criteria').on('change', function() {
     assign_criteria = $(this).filter(':checked').val();
@@ -211,6 +212,7 @@ function initMap() {
             driving.search(line_arr[k][0], line_arr[k][line_arr[k].length - 1], {
               waypoints: line_arr[k].slice(1, -1)
             }, function(status, data) {
+              driving.clear();
               if (status != 'complete') {
                 return;
               }
