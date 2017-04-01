@@ -14,7 +14,8 @@ var btns = $('.btn'),
   has_assigned = false,
   is_moving = 0,
   line_arr = {},
-  passed_polyline = {};
+  passed_polyline = {},
+  assign_criteria = 'duration';
 
 function initMap() {
   var map = new AMap.Map('container', {
@@ -68,6 +69,9 @@ function initMap() {
     removeVehicles();
     removePassedLine();
   });
+  $('.criteria').on('change', function() {
+    assign_criteria = $(this).filter(':checked').val();
+  })
 
   /**
    * create random order
@@ -166,8 +170,7 @@ function initMap() {
     }).done(function(solution) {
       has_assigned = true;
       console.log('Assign:', solution);
-      var criteria = 'duration';
-      var sequence = solution[criteria]['sequence'];
+      var sequence = solution[assign_criteria]['sequence'];
       ['a', 'b'].map(function(k) {
         var v = k == 'a' ? 0 : 1;
         line_arr[k] = [];
