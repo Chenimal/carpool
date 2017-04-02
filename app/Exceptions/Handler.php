@@ -45,6 +45,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        return response()->make($e->getMessage(), 500);
+        $response = response()->json($e->getMessage(), 500);
+        // jsonp
+        if ($request->input('jsonp')) {
+            $response->setCallback($request->input('jsonp'));
+        }
+        return $response;
     }
 }

@@ -31,7 +31,7 @@ function initMap() {
     btns.prop('disabled', true);
     removeOrders();
     removePassedLine();
-    var num_orders = 4; //Math.ceil(Math.random() * 5);
+    var num_orders = 1; //Math.ceil(Math.random() * 5);
     createOrders(num_orders).done(function() {
       has_orders = true;
       $('.create_orders, .get_vehicles').prop('disabled', false);
@@ -111,6 +111,8 @@ function initMap() {
         });
         orders[res.id] = [start, end];
       });
+    }).fail(function(err, b) {
+      alert('Oops... Somthing went wrong :( \nTry refreshing the page.');
     });
   }
 
@@ -165,6 +167,8 @@ function initMap() {
           });
         });
       });
+    }).fail(function() {
+      alert('Oops... Somthing went wrong :( \nTry refreshing the page.');
     });
   }
 
@@ -241,6 +245,8 @@ function initMap() {
           });
         }
       });
+    }).fail(function() {
+      alert('Oops... Somthing went wrong :( \nTry refreshing the page.');
     });
   }
 
@@ -273,6 +279,8 @@ function initMap() {
         if (remain <= 0) {
           promise.resolve();
         }
+      }).fail(function(err, b) {
+        alert('Oops... Somthing went wrong :( \nTry refreshing the page.');
       });
     }
     return promise.promise();
