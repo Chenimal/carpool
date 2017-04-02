@@ -1,28 +1,59 @@
-# Lumen PHP Framework
+# Carpool prototype
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://poser.pugx.org/laravel/lumen-framework/d/total.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/lumen-framework/v/stable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/lumen-framework/v/unstable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://packagist.org/packages/laravel/lumen-framework)
+### 1. Intro
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+    To view the demo, visit [ali-cloud/index.html]. To download the code, just click
+    the green button at upper-right corner.
 
-## Official Documentation
+    The basic idea is:
+    Firstly find all possible ways of spliting given orders(<=5) into two subsets.
+    Secondly for each possible subset of orders, find all possible sequences of
+    location points(vehicle locations, pickup locations& delivery locations),
+    and get the best sequence based on certain criteria(shortest time or duration).
+    Then for each possible partitioning, it has a solution.
+    At last we comepare all partitionings, and get the best one.
 
-Documentation for the framework can be found on the [Lumen website](http://lumen.laravel.com/docs).
+### 2. Assumptions(todo)
 
-## Security Vulnerabilities
+    * Orders:
+        1. Each order is randomly created(Inside Hong Kong main island).
+        Locations in the rest islands are excluded.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+### 3. Algotithm Explainations(todo)
 
-## License
+    * 3.1 To create random orders
 
-The Lumen framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+        The key is making sure the random locations are on the land rather than ocean.
+        Mathematically it is equivalent to the question: determine if a point is
+        inside/outside a polygon.
+        I use RayCasting method: cast a ray from the point, count the num of
+        intersections of the ray and polygon's borders.
+        If num is odd, it's inside; if num is even, it's outside.
 
-## Assumptions
+        See code implementation in `app/Library/Location.php:createRandomAccessibleLocation`.
+        [raycating picture]
 
-1. For each order deliveryTime > pickupTime >= currentTime
-2. For each order pickupTime <= currentTime + 24 hrs
-3. For each order deliveryTime - pickupTime <= 6 hrs
-4. Does serviceType will affect the strategy(e.g. Type A might have higher priority than B and C)?
+    * 3.2 Assign orders(find the best paths)
+        1. To split orders
+        2. To find all sequences
+
+### 4. API(todo)
+
+### 5. Testing(todo)
+
+    `phpunit tests/CreateOrderTest.php --filter testSingleRequest`
+    `phpunit tests/CreateOrderTest.php --filter testLoopRequest`
+
+### 6. Performances(todo)
+
+    Through self-testing, the APIs took around XXms,
+    and less than XXms on my local machine, which is nice.
+
+### 7. Tech Specs
+
+    * PHP 5.6
+    * Lumen 5.4
+    * Mysql
+    * Gaode map Api(高德地图)
+    * jQuery &Bootstrap
+    * Server: Ubuntu 16.x(Ali cloud server)
