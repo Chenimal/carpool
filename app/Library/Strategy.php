@@ -114,7 +114,7 @@ class Strategy
 
             if (!empty($conditions)) {
                 $meet_conditions = self::checkConditions($sequence, $conditions);
-                if (!$check_filter) {
+                if (!$meet_conditions) {
                     continue;
                 }
             }
@@ -162,14 +162,44 @@ class Strategy
         if (empty($conditions)) {
             return true;
         }
-        foreach ($conditions as $k => $c) {
-            if ($k == 'NO_MORE_THAN_ORIGINAL_DURATION') {
 
+        list($order_id, $position) = explode('_', $sequence[0]);
+
+        $actual_cost            = [];
+        $actual_cost[$order_id] = [
+            'duration' => 0,
+            'distance' => 0,
+        ];
+        $length = count($sequence);
+        for ($i = 1; $i < $length; $i++) {
+
+            $sub_distance = self::$sub_section_distances[$sequence[$i - 1]][$sequence[$i]];
+            foreach ($actual_cost as $o_id => $oc) {
+                $actual_cost[$o_id]['duration'] += $sub_distance->duration;
+                $actual_cost[$o_id]['distance'] += $sub_distance->distance;
             }
-            if ($k == 'NO_MORE_THAN_ORIGINAL_DISTANCE') {
 
+            list($order_id, $position) = explode('_', $sequence[$i]);
+            if ($position == 'start') {
+                $actual_cost[$order_id] = [
+                    'duration' => 0,
+                    'distance' => 0,
+                ];
+            }
+            // end
+            else {
+                $single_transit_cost = self::$sub_section_distances[$order_id . '_start'][$order_id . '_end'];
+
+                if (in_array('duration', $conditions) && $actual_cost[$order_id]['duration'] > 2 * $single_transit_cost->duration) {
+                    return false;
+                }
+                if (in_array('distance', $conditions) && $actual_cost[$order_id]['distance'] > 2 * $single_transit_cost->distance) {
+                    return false;
+                }
+                unset($actual_cost[$order_id]);
             }
         }
+        return true;
     }
 
     /**

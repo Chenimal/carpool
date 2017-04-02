@@ -16,7 +16,7 @@ var base_url = 'http://carpool.lalamove.com/',
   real_routes = {},
   passed_polyline = {},
   assign_criteria = 'duration',
-  restrictions = [],
+  restrictions = ['duration', 'distance'],
   animation_type = 'linear';
 
 function initMap() {
@@ -31,7 +31,7 @@ function initMap() {
     btns.prop('disabled', true);
     removeOrders();
     removePassedLine();
-    var num_orders = 1; //Math.ceil(Math.random() * 5);
+    var num_orders = 2; //Math.ceil(Math.random() * 5);
     createOrders(num_orders).done(function() {
       has_orders = true;
       $('.create_orders, .get_vehicles').prop('disabled', false);
