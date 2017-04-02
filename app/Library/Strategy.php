@@ -17,7 +17,7 @@ class Strategy
      * @param  array $vehicles
      * @return 0 or 1 (vehicle index)
      */
-    public static function basic($order_ids, $vehicles)
+    public static function basic($order_ids, $vehicles, $conditions = null)
     {
         if (empty($order_ids) || count($vehicles) !== 2) {
             return;
@@ -33,8 +33,8 @@ class Strategy
             $sequences_vehicle_0 = self::sequences($split[0]);
             $sequences_vehicle_1 = self::sequences($split[1]);
 
-            $v0 = self::leastCostSequence($sequences_vehicle_0, 0);
-            $v1 = self::leastCostSequence($sequences_vehicle_1, 1);
+            $v0 = self::bestSequence($sequences_vehicle_0, 0, $conditions);
+            $v1 = self::bestSequence($sequences_vehicle_1, 1, $conditions);
 
             $solutions[] = [
                 'duration' => [
@@ -93,7 +93,7 @@ class Strategy
      * @param  int 0 or 1, vehicle index
      * @return array min
      */
-    protected static function leastCostSequence($sequences, $vehicle_index)
+    protected static function bestSequence($sequences, $vehicle_index, $conditions = null)
     {
         $min = [
             'duration' => [
@@ -111,6 +111,14 @@ class Strategy
             if (empty($sequence)) {
                 continue;
             }
+
+            if (!empty($conditions)) {
+                $meet_conditions = self::checkConditions($sequence, $conditions);
+                if (!$check_filter) {
+                    continue;
+                }
+            }
+
             $duration = 0;
             $distance = 0;
 
@@ -144,11 +152,32 @@ class Strategy
     }
 
     /**
+     * check if the sequence meet the given condition(s)
+     * @param  array $sequence
+     * @param  array $conditions
+     * @return boolean true or false
+     */
+    protected static function checkConditions($sequence, $conditions)
+    {
+        if (empty($conditions)) {
+            return true;
+        }
+        foreach ($conditions as $k => $c) {
+            if ($k == 'NO_MORE_THAN_ORIGINAL_DURATION') {
+
+            }
+            if ($k == 'NO_MORE_THAN_ORIGINAL_DISTANCE') {
+
+            }
+        }
+    }
+
+    /**
      * find out all possible ways of spliting given orders into two vehicles
      * @param array $order_ids
      * @return array of possible splits: [[order_ids_for_vehicle_a, order_ids_for_vehicle_b], ...]
      */
-    public static function splits($order_ids)
+    protected static function splits($order_ids)
     {
         // maximum&minimum number of orders a vehicle could have at a time
         $max_num_orders = min(3, count($order_ids));
@@ -169,7 +198,7 @@ class Strategy
      * @param array order_ids
      * @return array e.g. ['order_1_start','order_2_start','order_2_end','order_1_end']
      */
-    public static function sequences($order_ids)
+    protected static function sequences($order_ids)
     {
         $points = [];
         foreach ($order_ids as $id) {
@@ -192,7 +221,7 @@ class Strategy
      *     ],...
      *  ]
      */
-    public static function subSectionDistances($order_ids, $vehicles)
+    protected static function subSectionDistances($order_ids, $vehicles)
     {
         if (isset(self::$sub_section_distances)) {
             return self::$sub_section_distances;

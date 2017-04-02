@@ -57,10 +57,11 @@ class OrdersController extends Controller
      */
     public function assign(Request $request)
     {
-        $order_ids = $request->input('order_ids');
-        $vehicles  = $request->input('vehicles');
+        $order_ids  = $request->input('order_ids');
+        $vehicles   = $request->input('vehicles');
+        $conditions = $request->input('conditions');
 
-        $result   = Strategy::basic($order_ids, $vehicles);
+        $result   = Strategy::basic($order_ids, $vehicles, $conditions);
         $response = response()->json($result);
 
         // jsonp
