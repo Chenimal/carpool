@@ -8,25 +8,26 @@ Click [here](http://47.52.30.33/index.html) to view the demo. The source code is
 
 To run the program, follow the steps below:
 
-1. First you need to create random orders and vehicles. Simply click 'New orders' and 'Get vehicles'. You will see some new spots showing on the map. Each order has an unique color(Label S(start) and E(end) represent pickup& deliver locations respectively). You will also see two lightgreen spots labeled Va and Vb representing two different vehicles.
+1. First you need to create random orders and vehicles. Simply click 'New orders' and 'Get vehicles'. You will see some new spots showing on the map. Each order has an unique color. Label S(start) and E(end) represent pickup& deliver locations respectively. You will also see two lightgreen spots labeled Va and Vb representing two different vehicles.
 
 2. Then there will be more options show up and the button 'Assign orders' should be available to click. For the first time you can just leave the options as default and click 'Assign orders'.
 
-Animation type: I personally think linear one can better illustrate the order&relationship, but real route is more
+3. You will see the animation starts, representing each vehicle's path.
+
+4. Once both are stopped, you can replay the animation, or click 'Start over' button to clear the map.
+
 
 #### 1.2 Basic Strategy
 
 The basic idea is:
 
-1. Firstly find all possible ways of spliting given orders(<=5) into two subsets.
+1. Firstly find all possible ways of partitioning given orders(<=5) into two subsets.
 
 2. For each possible subset of orders, find all possible sequences of location points(vehicle locations, pickup locations& delivery locations).
 
-3. Get the best sequence based on certain criteria(shortest time or duration).
+3. Get the best sequence of them based on certain criterias(shortest distance/duration) and restrictions. Then for each possible partitioning, it has a best solution: two best sequences for the two vehicles.
 
-3. For each possible partitioning, it has a solution.
-
-At last we comepare all partitionings, and get the best one.
+4. At last we comepare all partitionings, and get the best one based on the criterias
 
 ---
 
