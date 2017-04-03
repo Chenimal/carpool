@@ -31,6 +31,7 @@ function initMap() {
     btns.prop('disabled', true);
     removeOrders();
     removePassedLine();
+    $('.order_tr').remove();
     var num_orders = 2; //Math.ceil(Math.random() * 5);
     createOrders(num_orders).done(function() {
       has_orders = true;
@@ -45,6 +46,7 @@ function initMap() {
     btns.prop('disabled', true);
     removeVehicles();
     removePassedLine();
+    $('.vehicle_tr').remove();
     getVehicles().done(function() {
       has_vehicles = true;
       $('.create_orders, .get_vehicles').prop('disabled', false);
@@ -52,7 +54,6 @@ function initMap() {
         $('.assign_orders').prop('disabled', false);
         $('.control_options').removeClass('hide');
       }
-      map.setFitView();
     });
   });
   $('.assign_orders').on('click', function() {
@@ -123,7 +124,7 @@ function initMap() {
    */
   function insertTableOrder(data) {
     $('.order_table').removeClass('hide');
-    $('.order_table tbody').append("<tr class='info'><th>" + data.id + "</th><td>" +
+    $('.order_table tbody').append("<tr class='order_tr info'><th>" + data.id + "</th><td>" +
       data.service_type + "</td><td>" +
       data.pickup_time + "<br>[" + data.pickup_lng_lat.map(function(s) {
         return Number(s).toFixed(8);
@@ -197,7 +198,7 @@ function initMap() {
   function insertTableVehicle(data) {
     $('.vehicle_table').removeClass('hide');
     Object.keys(data).map(function(k) {
-      $('.vehicle_table tbody').append("<tr class='success'><th>" + k + "</th><td>" +
+      $('.vehicle_table tbody').append("<tr class='vehicle_tr success'><th>" + k + "</th><td>" +
         "[" + data[k].map(function(s) {
           return Number(s).toFixed(8);
         }) + "]</td><td></td></tr>");
