@@ -1,6 +1,6 @@
 ## Carpool prototype
 
-### 1. Introduction(todo)
+### 1. Introduction
 
 Click [here](http://47.52.30.33/index.html) to view the demo. The source code is available to download [here](github download link).
 
@@ -16,8 +16,13 @@ To run the program, follow the steps below:
 
 4. Once both are stopped, you can replay the animation, or click 'Start over' button to clear the map.
 
+Options:
 
-#### 1.2 Basic Strategy
+* Animation type: The linear one could better illustrate path's order&relationships. But in case you feel it is unreal, just select 'real route'.
+* Assign criteria: The definition of the best strategy.
+* Restrictions: Some limitations when calculating the path, considering user's experiences.
+
+#### 1.2 Assign Strategy
 
 The basic idea is:
 
@@ -27,31 +32,31 @@ The basic idea is:
 
 3. Get the best sequence of them based on certain criterias(shortest distance/duration) and restrictions. Then for each possible partitioning, it has a best solution: two best sequences for the two vehicles.
 
-4. At last we comepare all partitionings, and get the best one based on the criterias
+4. At last we comepare all partitionings, and get the best one based on the criterias.
 
 ---
 
 ### 2. Algotithm Explainations(todo)
 
-* 2.1 Creating random orders
+#### 2.1 Creating random orders
 
-    The key is making sure the random locations are on the land rather than ocean. Mathematically it is equivalent to the question: determine if a point is inside/outside a polygon.
+The key is making sure the random locations are on the land rather than ocean. Mathematically it is equivalent to the question: determine if a point is inside/outside a polygon.
 
-    I use RayCasting method: cast a ray from the point, count the num of intersections of the ray and polygon's borders. If num is odd, it's inside; if num is even, it's outside.
+I use RayCasting method: cast a ray from the point, count the num of intersections of the ray and polygon's borders. If num is odd, it's inside; if num is even, it's outside.
 
-    See code implementation in `app/Library/Location.php:createRandomAccessibleLocation`.
+See code implementation in `app/Library/Location.php:createRandomAccessibleLocation`.
 [raycating picture]
 
-* 2.2 Assign orders(find the best path)
+#### 2.2 Assign orders(find the best path)
 
-    - 2.2.1. Split orders
+- 2.2.1. Split orders
 
-        The problem of spliting n orders into two subsets is equivalent to putting n balls into two boxes. Thus it has Cn2(markdwon syntax?) possibilities.
+    The problem of spliting n orders into two subsets is equivalent to putting n balls into two boxes. Thus it has Cn2(markdwon syntax?) possibilities.
 
-        Code implementation: `app/bootstrap/functions.php:math_combination`
+    Code implementation: `app/bootstrap/functions.php:math_combination`
 
 
-    - 2.2.2. To find all sequences
+- 2.2.2. To find all sequences
 
 ---
 
