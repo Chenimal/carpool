@@ -39,7 +39,6 @@ function initMap() {
         $('.assign_orders').prop('disabled', false);
         $('.control_options').removeClass('hide');
       }
-      map.setFitView();
     })
   });
   $('.get_vehicles').on('click', function() {
@@ -123,7 +122,8 @@ function initMap() {
    * @return {[type]} [description]
    */
   function insertTableOrder(data) {
-    $('.order_table tbody').append("<tr><th>" + data.id + "</th><td>" +
+    $('.order_table').removeClass('hide');
+    $('.order_table tbody').append("<tr class='info'><th>" + data.id + "</th><td>" +
       data.service_type + "</td><td>" +
       data.pickup_time + "<br>[" + data.pickup_lng_lat.map(function(s) {
         return Number(s).toFixed(8);
@@ -160,6 +160,7 @@ function initMap() {
       jsonp: 'jsonp',
     }).done(function(data) {
       console.log('Vehicles:', data);
+      insertTableVehicle(data);
       return AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
         Object.keys(data).map(function(k) {
           vehicles[k] = new SimpleMarker({
@@ -186,6 +187,20 @@ function initMap() {
       });
     }).fail(function() {
       alert('Oops... Somthing went wrong :( \nTry refreshing the page.');
+    });
+  }
+
+  /**
+   * insert order data into table
+   * @return {[type]} [description]
+   */
+  function insertTableVehicle(data) {
+    $('.vehicle_table').removeClass('hide');
+    Object.keys(data).map(function(k) {
+      $('.vehicle_table tbody').append("<tr class='success'><th>" + k + "</th><td>" +
+        "[" + data[k].map(function(s) {
+          return Number(s).toFixed(8);
+        }) + "]</td><td></td></tr>");
     });
   }
 
