@@ -47,21 +47,20 @@ I use RayCasting method: cast a ray from the point, count the num of intersectio
 See code implementation in `app/Library/Location.php:createRandomAccessibleLocation`.
 [raycating picture]
 
-#### 2.2 Assign orders(find the best path)
+#### 2.2 Split orders
 
-- ##### 2.2.1 Split orders
+The problem of spliting n orders into two subsets is equivalent to putting n balls into two boxes. Note each box could contain up to 3 balls. If n > 3(n=4,5), each box must contain at least n-3 balls.
+Thus it has 求和 combinations.
 
-    The problem of spliting n orders into two subsets is equivalent to putting n balls into two boxes. Thus it has Cn,2(markdwon syntax?) combinations.
+Code implementation: `app/bootstrap/functions.php:math_combination`
 
-    Code implementation: `app/bootstrap/functions.php:math_combination`
+#### 2.3 To find all sequences
 
-- ##### 2.2.2 To find all sequences
+Given n orders, find all sequences of pickup&dropoff locations. Note for each order, the pickup location cannot after its dropoff location. Thus it has P2n,2n/(2^n) (markdwon syntax?) permutations.
 
-    Given n orders, find all sequences of pickup&dropoff locations. Note for each order, the pickup location cannot after its dropoff location. Thus it has P2n,2n/(2^n) (markdwon syntax?) permutations.
+Code implementation: `app/bootstrap/functions.php:math_sequence`
 
-    Code implementation: `app/bootstrap/functions.php:math_sequence`
-
-- ##### 2.2.3 To find best sequence
+#### 2.4 To find best sequence
 
 ---
 
