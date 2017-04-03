@@ -23,7 +23,7 @@ function initMap() {
   var btns = $('.btn');
   var map = new AMap.Map('container', {
     center: [114.127439, 22.3746645],
-    zoom: 11
+    zoom: 10
   });
 
   // user interaction
@@ -39,6 +39,7 @@ function initMap() {
         $('.assign_orders').prop('disabled', false);
         $('.control_options').removeClass('hide');
       }
+      map.setFitView();
     })
   });
   $('.get_vehicles').on('click', function() {
@@ -52,6 +53,7 @@ function initMap() {
         $('.assign_orders').prop('disabled', false);
         $('.control_options').removeClass('hide');
       }
+      map.setFitView();
     });
   });
   $('.assign_orders').on('click', function() {
@@ -96,6 +98,7 @@ function initMap() {
       jsonp: 'jsonp',
     }).done(function(res) {
       console.log('Order:', res);
+      insertTableOrder(res);
       AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
         var start = new SimpleMarker({
           iconLabel: 'S',
@@ -114,6 +117,20 @@ function initMap() {
     }).fail(function(err, b) {
       alert('Oops... Somthing went wrong :( \nTry refreshing the page.');
     });
+  }
+  /**
+   * insert order data into table
+   * @return {[type]} [description]
+   */
+  function insertTableOrder(data) {
+    $('.order_table tbody').append("<tr><th>" + data.id + "</th><td>" +
+      data.service_type + "</td><td>" +
+      data.pickup_time + "<br>[" + data.pickup_lng_lat.map(function(s) {
+        return Number(s).toFixed(8);
+      }) + "]</td><td>" +
+      data.delivery_time + "<br>[" + data.dropoff_lng_lat.map(function(s) {
+        return Number(s).toFixed(8);
+      }) + "]</td></tr>");
   }
 
   /**

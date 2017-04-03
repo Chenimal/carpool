@@ -39,8 +39,8 @@ class OrdersController extends Controller
         ];
         $order = Order::instance()->create($input);
 
-        $order['pickup_time']   = date('Y-m-d H:i:s', $order['pickup_time']);
-        $order['delivery_time'] = date('Y-m-d H:i:s', $order['delivery_time']);
+        $order['pickup_time']   = date('H:i:s', $order['pickup_time']);
+        $order['delivery_time'] = date('H:i:s', $order['delivery_time']);
         $response               = response()->json($order);
         // jsonp
         if ($request->input('jsonp')) {
