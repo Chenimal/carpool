@@ -1,9 +1,10 @@
 ## Carpool prototype
 
-### 1. Intro
+### 1. Introduction(todo)
 
-Click [here](http://47.52.30.33/index.html) to view the demo. To download the code, just click
-the green button at upper-right corner.
+Click [here](http://47.52.30.33/index.html) to view the demo. The source code is available to download [here](github download link).
+
+#### 1.1 Steps to run
 
 To run the program, follow the steps below:
 
@@ -13,23 +14,25 @@ To run the program, follow the steps below:
 
 Animation type: I personally think linear one can better illustrate the order&relationship, but real route is more
 
+#### 1.2 Basic Strategy
+
 The basic idea is:
-Firstly find all possible ways of spliting given orders(<=5) into two subsets.
-Secondly for each possible subset of orders, find all possible sequences of
-location points(vehicle locations, pickup locations& delivery locations),
-and get the best sequence based on certain criteria(shortest time or duration).
-Then for each possible partitioning, it has a solution.
+
+1. Firstly find all possible ways of spliting given orders(<=5) into two subsets.
+
+2. For each possible subset of orders, find all possible sequences of location points(vehicle locations, pickup locations& delivery locations).
+
+3. Get the best sequence based on certain criteria(shortest time or duration).
+
+3. For each possible partitioning, it has a solution.
+
 At last we comepare all partitionings, and get the best one.
 
-### 2. Assumptions(todo)
+---
 
-    * Orders:
-        1. Each order is randomly created(Inside Hong Kong main island).
-        Locations in the rest islands are excluded.
+### 2. Algotithm Explainations(todo)
 
-### 3. Algotithm Explainations(todo)
-
-* 3.1 Creating random orders
+* 2.1 Creating random orders
 
     The key is making sure the random locations are on the land rather than ocean. Mathematically it is equivalent to the question: determine if a point is inside/outside a polygon.
 
@@ -38,32 +41,38 @@ At last we comepare all partitionings, and get the best one.
     See code implementation in `app/Library/Location.php:createRandomAccessibleLocation`.
 [raycating picture]
 
-* 3.2 Assign orders(find the best path)
+* 2.2 Assign orders(find the best path)
 
-    1. Split orders
+    - 2.2.1. Split orders
 
         The problem of spliting n orders into two subsets is equivalent to putting n balls into two boxes. Thus it has Cn2(markdwon syntax?) possibilities.
 
         Code implementation: `app/bootstrap/functions.php:math_combination`
 
 
-    2. To find all sequences
+    - 2.2.2. To find all sequences
 
+---
 
-
-### 4. API(todo)
-
-### 5. Testing(todo)
+### 3. Testing(todo)
 
     `phpunit tests/CreateOrderTest.php --filter testSingleRequest`
     `phpunit tests/CreateOrderTest.php --filter testLoopRequest`
-
-### 6. Performances(todo)
-
+    Performance
     Through self-testing, the APIs took around XXms,
     and less than XXms on my local machine, which is nice.
 
-### 7. Tech Specs
+---
+
+### 4. Assumptions(todo)
+
+    * Orders:
+        1. Each order is randomly created(Inside Hong Kong main island).
+        Locations in the rest islands are excluded.
+
+---
+
+### 5. Tech Specs
 
     * PHP 5.6
     * Lumen 5.4
