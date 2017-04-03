@@ -49,14 +49,19 @@ See code implementation in `app/Library/Location.php:createRandomAccessibleLocat
 
 #### 2.2 Assign orders(find the best path)
 
-- 2.2.1. Split orders
+- ##### 2.2.1 Split orders
 
-    The problem of spliting n orders into two subsets is equivalent to putting n balls into two boxes. Thus it has Cn2(markdwon syntax?) possibilities.
+    The problem of spliting n orders into two subsets is equivalent to putting n balls into two boxes. Thus it has Cn,2(markdwon syntax?) combinations.
 
     Code implementation: `app/bootstrap/functions.php:math_combination`
 
+- ##### 2.2.2 To find all sequences
 
-- 2.2.2. To find all sequences
+    Given n orders, find all sequences of pickup&dropoff locations. Note for each order, the pickup location cannot after its dropoff location. Thus it has P2n,2n/(2^n) (markdwon syntax?) permutations.
+
+    Code implementation: `app/bootstrap/functions.php:math_sequence`
+
+- ##### 2.2.3 To find best sequence
 
 ---
 
