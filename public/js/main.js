@@ -239,7 +239,7 @@ function initMap() {
       var sequence = solution[assign_criteria]['sequence'];
       ['a', 'b'].map(function(k) {
         var v = k == 'a' ? 0 : 1;
-        insertTableVehicleWithSequence(sequence[v], k);
+        insertSequenceInfo(sequence[v], k);
         line_arr[k] = [];
         line_arr[k].push(original_vehicle_locations[k]);
         for (var i = 0; i < sequence[v].length; i++) {
@@ -290,6 +290,7 @@ function initMap() {
           });
         }
       });
+      insertDelayInfo(solution[assign_criteria]['delay']);
     }).fail(function() {
       alert('Oops... Somthing went wrong :( \nTry refreshing the page.');
     });
@@ -298,12 +299,21 @@ function initMap() {
   /**
    * insert sequence data into vehicle table
    */
-  function insertTableVehicleWithSequence(data, k) {
+  function insertSequenceInfo(data, k) {
     var str_sequence = data.map(function(elt) {
       var index = elt.split('_');
       return "<span style='background-color:" + orders[index[0]]['color'] + "'>&nbsp;" + index[1] + "&nbsp;</span>";
     }).join(' -> ', data);
     $('.sequence_td_' + k).empty().append(str_sequence);
+  }
+
+  /**
+   * update delay info for each order
+   */
+  function insertDelayInfo(data) {
+    Object.keys(data).map(function(order_id) {
+      $('.delay_td_' + order_id).text('' + (data[order_id] / 60) + ' mins');
+    });
   }
 
   /**

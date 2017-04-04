@@ -42,12 +42,14 @@ class Strategy
                     'sequence' => [isset($v0['duration']['key']) ? $sequences_vehicle_0[$v0['duration']['key']] : [], isset($v1['duration']['key']) ? $sequences_vehicle_1[$v1['duration']['key']] : []],
                     'duration' => [$v0['duration']['duration'], $v1['duration']['duration']],
                     'distance' => [$v0['duration']['distance'], $v1['duration']['distance']],
+                    'delay'    => $v0['duration']['delay'] + $v1['duration']['delay'],
                 ],
                 'distance' => [
                     'total'    => $v0['distance']['distance'] + $v1['distance']['distance'],
                     'sequence' => [isset($v0['distance']['key']) ? $sequences_vehicle_0[$v0['distance']['key']] : [], isset($v1['distance']['key']) ? $sequences_vehicle_1[$v1['distance']['key']] : []],
                     'duration' => [$v0['distance']['duration'], $v1['distance']['duration']],
                     'distance' => [$v0['distance']['distance'], $v1['distance']['distance']],
+                    'delay'    => $v0['distance']['delay'] + $v1['distance']['delay'],
                 ],
             ];
         }
@@ -68,12 +70,14 @@ class Strategy
                 'sequence' => [],
                 'duration' => [],
                 'distance' => [],
+                'delay'    => [],
             ],
             'distance' => [
                 'total'    => 0,
                 'sequence' => [],
                 'duration' => [],
                 'distance' => [],
+                'delay'    => [],
             ],
         ];
         foreach ($solutions as $s) {
@@ -141,6 +145,7 @@ class Strategy
                     'key'      => $key,
                     'duration' => $duration,
                     'distance' => $distance,
+                    'delay'    => self::getDelay($actual_cost),
                 ];
             }
             if (!isset($min['distance']['distance']) || $distance < $min['distance']['distance']) {
@@ -148,10 +153,26 @@ class Strategy
                     'key'      => $key,
                     'duration' => $duration,
                     'distance' => $distance,
+                    'delay'    => self::getDelay($actual_cost),
                 ];
             }
         }
         return $min;
+    }
+
+    /**
+     * get each order delay info based on their actual cost
+     * @param array [order_id=>cost,...]
+     * @return array [order_id=>delay,...]
+     */
+    protected static function getDelay($actual_cost)
+    {
+        $delay = [];
+        foreach ($actual_cost as $o_id => $cost) {
+            $single_transit_cost = self::$sub_section_distances[$o_id . '_start'][$o_id . '_end'];
+            $delay[$o_id]        = $actual_cost[$o_id]['duration'] - $single_transit_cost->duration;
+        }
+        return $delay;
     }
 
     /**
