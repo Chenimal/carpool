@@ -301,7 +301,7 @@ function initMap() {
   function insertTableVehicleWithSequence(data, k) {
     var str_sequence = data.map(function(elt) {
       var index = elt.split('_');
-      return "<span style='background-color:" + orders[index[0]]['color'] + "'> " + index[1] + " </span>";
+      return "<span style='background-color:" + orders[index[0]]['color'] + "'>&nbsp;" + index[1] + "&nbsp;</span>";
     }).join(' -> ', data);
     $('.sequence_td_' + k).empty().append(str_sequence);
   }

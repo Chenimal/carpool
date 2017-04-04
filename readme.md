@@ -74,11 +74,13 @@ Code implementation: `app/bootstrap/functions.php:math_sequence`
 
 ---
 
-### 4. Assumptions(todo)
+### 4. Assumptions
 
-    * Orders:
-        1. Each order is randomly created(Inside Hong Kong main island).
-        Locations in the rest islands are excluded.
+- All locations are limited in Hong Kong main island.
+- For each order, the duration(delivery_time - pickup_time) is based on real conditions, not specified by users.
+- For each order, the pickup time is flexible and negotiable with clients.
+- Each vehicle can take up to 3 orders at a time.
+- No more than 5 orders can be shown on the map.
 
 ---
 
