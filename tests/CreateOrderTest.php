@@ -2,7 +2,7 @@
 
 class CreateOrderTest extends TestCase
 {
-    private $loop = 10000;
+    private $loop = 100;
 
     public function testSingleRequest()
     {
@@ -13,22 +13,16 @@ class CreateOrderTest extends TestCase
         );
     }
 
-    public function testLoopRequest()
+    public function testMultiRequests()
     {
-        $pickup_time   = [];
-        $delivery_time = [
-            'max' => null,
-            'min' => null,
-        ];
-        $gap = [
-            'max' => null,
-            'min' => null,
-        ];
         $service_types = [];
+        $pickup_times  = [];
+
+        $start_timestamp = microtime(true);
 
         $i = 0;
         while ($i < $this->loop) {
-            $response = $this->call('GET', 'orders/create')
+            $response = $this->call('GET', 'orders/create-random')
                 ->getData();
 
             if (!isset($service_types[$response->service_type])) {
@@ -36,26 +30,23 @@ class CreateOrderTest extends TestCase
             }
             $service_types[$response->service_type]++;
 
-            if (!isset($pickup_time[$response->pickup_time])) {
-                $pickup_time[$response->pickup_time] = 0;
+            if (!isset($pickup_times[$response->pickup_time])) {
+                $pickup_times[$response->pickup_time] = 0;
             }
-            $pickup_time[$response->pickup_time]++;
+            $pickup_times[$response->pickup_time]++;
 
-            $delivery_time['max'] = $delivery_time['max'] ? max($delivery_time['max'], $response->delivery_time) : $response->delivery_time;
-            $delivery_time['min'] = $delivery_time['min'] ? min($delivery_time['min'], $response->delivery_time) : $response->delivery_time;
-            $gap['max']           = $gap['max'] ? max($gap['max'], strtotime($response->delivery_time) - strtotime($response->pickup_time)) : strtotime($response->delivery_time) - strtotime($response->pickup_time);
-            $gap['min']           = $gap['min'] ? min($gap['min'], strtotime($response->delivery_time) - strtotime($response->pickup_time)) : strtotime($response->delivery_time) - strtotime($response->pickup_time);
             $i++;
         }
+        $end_timestamp = microtime(true);
+
         echo "\nservice_types: \n";
         foreach ($service_types as $key => $v) {
             echo "{$key}: {$v}\n";
         }
         echo "\npickup_time: \n";
-        foreach ($pickup_time as $key => $v) {
+        foreach ($pickup_times as $key => $v) {
             echo "{$key}: {$v}\n";
         }
-        echo "\ndelivery time:\nmin: {$delivery_time['min']}\nmax: {$delivery_time['max']}\n";
-        echo "\nduration(delivery_time - pickup_time):\nmin: " . ($gap['min'] / 3600) . " hrs\nmax: " . ($gap['max'] / 3600) . " hrs\n";
+        echo "\nAverage time for each request: " . ($end_timestamp - $start_timestamp) / $this->loop . "\n";
     }
 }

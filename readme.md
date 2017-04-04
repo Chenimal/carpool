@@ -22,6 +22,9 @@ To run the program, follow the steps below:
 * `Assign criteria`: The definition of the best strategy.
 * `Restrictions`:  Limitations when calculating the path, considering user's experiences. e.g. if set duration restriction=1.2, and an order takes 10 minutes on single transit, then the order in carpool transit cannot exceed 12 minutes.
 
+![](doc/interface.png)
+
+
 #### 1.2 Assign Strategy
 
 The basic idea is:
@@ -140,8 +143,10 @@ Then calculate all sequences' durations&distances and select least cost one(Cons
 
 ### 3. Testing(todo)
 
-    `phpunit tests/CreateOrderTest.php --filter testSingleRequest`
-    `phpunit tests/CreateOrderTest.php --filter testLoopRequest`
+- Create random order:
+
+`phpunit tests/CreateOrderTest.php --filter testSingleRequest`
+`phpunit tests/CreateOrderTest.php --filter testMultiRequests`
     Performance
     Through self-testing, the APIs took around XXms,
     and less than XXms on my local machine, which is nice.
@@ -150,7 +155,7 @@ Then calculate all sequences' durations&distances and select least cost one(Cons
 
 ### 4. Assumptions
 
-- All locations are limited in Hong Kong main island.
+- All locations are limited in accessible area in Hong Kong. Some small islands are excluded.
 - For each order, the duration(delivery_time - pickup_time) is based on real conditions, not specified by users.
 - For each order, the pickup time is flexible and negotiable with clients.
 - Each vehicle can take up to 3 orders at a time.
