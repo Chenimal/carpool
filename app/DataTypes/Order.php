@@ -45,8 +45,8 @@ class Order
         if (empty($input['delivery_time'])) {
             throw new \Exception('Invalid order\'s delivery time');
         }
-        if ($input['pickup_time'] >= $input['delivery_time']) {
-            throw new \Exception('Order\'s delivery time must greater than pickup time');
+        if ($input['pickup_time'] > $input['delivery_time']) {
+            throw new \Exception('Order\'s delivery time must no less than pickup time');
         }
         if (empty($input['pickup_lng_lat']) || empty($input['pickup_lng_lat'][0]) || empty($input['pickup_lng_lat'][1])) {
             throw new \Exception('Unknown order\'s pickup coordinate');

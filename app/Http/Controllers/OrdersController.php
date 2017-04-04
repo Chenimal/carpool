@@ -53,7 +53,7 @@ class OrdersController extends Controller
      * assign an order to a specific vehicle
      * @param  int/array $order_ids
      * @param  array[[vehicle_1_lng,vehicle_1_lat],[vehicle_2_lng,vehicle_2_lat]]
-     * @return boolean
+     * @return json/jsonp
      */
     public function assign(Request $request)
     {
@@ -75,7 +75,7 @@ class OrdersController extends Controller
     /**
      * finish order and remove from the map
      * @param int order_id
-     * @return [type] [description]
+     * @return json/jsonp
      */
     public function finish($order_id)
     {

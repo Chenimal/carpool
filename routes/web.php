@@ -25,7 +25,7 @@ $app->get('orders/assign', [
     'uses' => 'OrdersController@assign',
 ]);
 
-// get single vehicle info
+// get 2 vehicles info
 $app->get('vehicles/random', [
     'uses' => 'VehiclesController@getRandom',
 ]);

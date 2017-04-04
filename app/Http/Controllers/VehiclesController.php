@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class VehiclesController extends Controller
 {
     /**
-     * get 2 vehicle randomly
+     * get 2 vehicles randomly
      * @param none
      * @return  json/jsonp
      */
