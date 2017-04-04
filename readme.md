@@ -47,14 +47,14 @@ The key is making sure the random locations are on the land rather than ocean. M
 
 I use RayCasting method: cast a ray from the point, count the num of intersections of the ray and polygon's borders. If num is odd, it's inside; if num is even, it's outside.
 
-See code implementation in `app/Library/Location.php:createRandomAccessibleLocation`.
+See code implementation in [app/Library/Location.php:createRandomAccessibleLocation](https://github.com/Chenimal/carpool/blob/master/app/Library/Location.php#L19).
 ![](doc/raycast.png)
 
 #### 2.2 Split orders
 
 * **2.2.1** The problem of spliting n orders into two subsets is equivalent to putting n balls into two boxes.
 
-    Code implementation: `app/bootstrap/functions.php:math_combination`
+    Code implementation: [app/bootstrap/functions.php:math_combination](https://github.com/Chenimal/carpool/blob/master/bootstrap/functions.php#L10)
 ```PHP
 function math_combination($arr, $num)
 {
@@ -87,7 +87,7 @@ function math_combination($arr, $num)
 
     ![](doc/combination_fomula.png)
 
-    Code implementation: `app/Library/Strategy.php:`
+    Code implementation: [app/Library/Strategy.php:splits](https://github.com/Chenimal/carpool/blob/master/app/Library/Strategy.php#L215)
 ```PHP
 protected static function splits($order_ids)
 {
@@ -110,7 +110,7 @@ protected static function splits($order_ids)
 
 Given n orders, find all sequences of pickup&dropoff locations. Note for each order, the pickup location cannot after its dropoff location. Thus it has **P<sub>2n</sub><sup>2n</sup>/(2<sup>n</sup>)** permutations.
 
-Code implementation: `app/bootstrap/functions.php:math_sequence`
+Code implementation: [app/bootstrap/functions.php:math_sequence](https://github.com/Chenimal/carpool/blob/master/bootstrap/functions.php#L33)
 ```PHP
 function math_sequence($arr)
 {
