@@ -96,24 +96,37 @@ class Location
     public static function distanceBatch($request)
     {
         $map = config('app.map');
+        $key = self::getKey();
 
-        $urls = [];
-        foreach ($request as $end_index => $r) {
-            $origins_str = [];
-            foreach ($r['origins'] as $start_index => $origin) {
-                $origins_str[] = implode(',', $origin);
+        for ($i = 0; $i < self::$num_available_keys; $i++) {
+            $urls = [];
+            foreach ($request as $end_index => $r) {
+                $origins_str = [];
+                foreach ($r['origins'] as $start_index => $origin) {
+                    $origins_str[] = implode(',', $origin);
+                }
+                $urls[] = ['url' => '/v3/distance?key=' . $key->key . '&origins=' . implode('|', $origins_str) . '&destination=' . implode(',', $r['destination'])];
             }
-            $urls[] = ['url' => '/v3/distance?key=' . $map['key'] . '&origins=' . implode('|', $origins_str) . '&destination=' . implode(',', $r['destination'])];
-        }
-        $post_url  = $map['base_url'] . 'batch?key=' . $map['key'];
-        $post_data = json_encode(['ops' => $urls]);
+            $post_url  = $map['base_url'] . 'batch?key=' . $key->key;
+            $post_data = json_encode(['ops' => $urls]);
 
-        $result   = self::curlPost($post_url, $post_data);
-        $response = [];
-        foreach ($result as $r) {
-            $response[] = $r->body->results;
+            $result = self::curlPost($post_url, $post_data);
+
+            $succed   = true;
+            $response = [];
+            foreach ($result as $r) {
+                if ($r->body->info == 'DAILY_QUERY_OVER_LIMIT') {
+                    $key    = self::updateKey();
+                    $succed = false;
+                    break;
+                }
+                $response[] = $r->body->results;
+            }
+            if ($succed) {
+                return $response;
+            }
         }
-        return $response;
+        throw new \Exception('The Gaode map api reached the limitation. Please contact me.');
     }
 
     /**
