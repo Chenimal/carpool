@@ -65,7 +65,7 @@ class AssignOrdersTest extends TestCase
             ->getData();
         $end_timestamp = microtime(true);
         $this->time_cost += $end_timestamp - $start_timestamp;
-        echo json_encode($result) . "\n";
+        echo json_encode($result) . ": {$this->time_cost}\n";
     }
 
     public function testMultiRequests()
@@ -74,7 +74,6 @@ class AssignOrdersTest extends TestCase
             $this->testSingleRequest();
             $i++;
         }
-
         echo "\nAverage time for each request: " . ($this->time_cost / $this->loop) . "\n";
     }
 }

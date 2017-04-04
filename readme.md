@@ -153,6 +153,12 @@ Then calculate all sequences' durations&distances and select least cost one(Cons
 `phpunit tests/GetVehiclesTest.php --filter testSingleRequest`
 `phpunit tests/GetVehiclesTest.php --filter testMultiRequests`
 
+- Assign orders *(240 ms on average)*;
+
+`phpunit tests/AssignOrdersTest.php --filter testBorder`
+`phpunit tests/AssignOrdersTest.php --filter testSingleRequest`
+`phpunit tests/AssignOrdersTest.php --filter testMultiRequests`
+
 ---
 
 ### 4. Assumptions
