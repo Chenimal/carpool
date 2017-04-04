@@ -59,9 +59,10 @@ class OrdersController extends Controller
     {
         $order_ids  = $request->input('order_ids');
         $vehicles   = $request->input('vehicles');
+        $criteria   = $request->input('criteria');
         $conditions = $request->input('conditions');
 
-        $result   = Strategy::basic($order_ids, $vehicles, $conditions);
+        $result   = Strategy::basic($order_ids, $vehicles, $criteria, $conditions);
         $response = response()->json($result);
 
         // jsonp

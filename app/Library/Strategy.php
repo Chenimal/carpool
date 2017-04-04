@@ -17,7 +17,7 @@ class Strategy
      * @param  array $vehicles
      * @return 0 or 1 (vehicle index)
      */
-    public static function basic($order_ids, $vehicles, $conditions = null)
+    public static function basic($order_ids, $vehicles, $criteria = 'duration', $conditions = null)
     {
         if (empty($order_ids) || count($vehicles) !== 2) {
             return;
@@ -33,24 +33,15 @@ class Strategy
             $sequences_vehicle_0 = self::sequences($split[0]);
             $sequences_vehicle_1 = self::sequences($split[1]);
 
-            $v0 = self::bestSequence($sequences_vehicle_0, 0, $conditions);
-            $v1 = self::bestSequence($sequences_vehicle_1, 1, $conditions);
+            $v0 = self::bestSequence($sequences_vehicle_0, 0, $criteria, $conditions);
+            $v1 = self::bestSequence($sequences_vehicle_1, 1, $criteria, $conditions);
 
             $solutions[] = [
-                'duration' => [
-                    'total'    => $v0['duration']['duration'] + $v1['duration']['duration'],
-                    'sequence' => [isset($v0['duration']['key']) ? $sequences_vehicle_0[$v0['duration']['key']] : [], isset($v1['duration']['key']) ? $sequences_vehicle_1[$v1['duration']['key']] : []],
-                    'duration' => [$v0['duration']['duration'], $v1['duration']['duration']],
-                    'distance' => [$v0['duration']['distance'], $v1['duration']['distance']],
-                    'delay'    => $v0['duration']['delay'] + $v1['duration']['delay'],
-                ],
-                'distance' => [
-                    'total'    => $v0['distance']['distance'] + $v1['distance']['distance'],
-                    'sequence' => [isset($v0['distance']['key']) ? $sequences_vehicle_0[$v0['distance']['key']] : [], isset($v1['distance']['key']) ? $sequences_vehicle_1[$v1['distance']['key']] : []],
-                    'duration' => [$v0['distance']['duration'], $v1['distance']['duration']],
-                    'distance' => [$v0['distance']['distance'], $v1['distance']['distance']],
-                    'delay'    => $v0['distance']['delay'] + $v1['distance']['delay'],
-                ],
+                'total'    => $v0['duration'] + $v1['duration'],
+                'sequence' => [isset($v0['key']) ? $sequences_vehicle_0[$v0['key']] : [], isset($v1['key']) ? $sequences_vehicle_1[$v1['key']] : []],
+                'duration' => [$v0['duration'], $v1['duration']],
+                'distance' => [$v0['distance'], $v1['distance']],
+                'delay'    => $v0['delay'] + $v1['delay'],
             ];
         }
         $result = self::leastCostSolution($solutions);
@@ -65,27 +56,15 @@ class Strategy
     protected static function leastCostSolution($solutions)
     {
         $min = [
-            'duration' => [
-                'total'    => 0,
-                'sequence' => [],
-                'duration' => [],
-                'distance' => [],
-                'delay'    => [],
-            ],
-            'distance' => [
-                'total'    => 0,
-                'sequence' => [],
-                'duration' => [],
-                'distance' => [],
-                'delay'    => [],
-            ],
+            'total'    => 0,
+            'sequence' => [],
+            'duration' => [],
+            'distance' => [],
+            'delay'    => [],
         ];
         foreach ($solutions as $s) {
-            if ($s['duration']['total'] != 0 && ($min['duration']['total'] == 0 || $s['duration']['total'] < $min['duration']['total'])) {
-                $min['duration'] = $s['duration'];
-            }
-            if ($s['distance']['total'] != 0 && ($min['distance']['total'] == 0 || $s['distance']['total'] < $min['distance']['total'])) {
-                $min['distance'] = $s['distance'];
+            if ($s['total'] != 0 && ($min['total'] == 0 || $s['total'] < $min['total'])) {
+                $min = $s;
             }
         }
         return $min;
@@ -97,21 +76,13 @@ class Strategy
      * @param  int 0 or 1, vehicle index
      * @return array min
      */
-    protected static function bestSequence($sequences, $vehicle_index, $conditions = null)
+    protected static function bestSequence($sequences, $vehicle_index, $criteria = "duration", $conditions = null)
     {
         $min = [
-            'duration' => [
-                'key'      => null,
-                'duration' => null,
-                'distance' => null,
-                'delay'    => [],
-            ],
-            'distance' => [
-                'key'      => null,
-                'duration' => null,
-                'distance' => null,
-                'delay'    => [],
-            ],
+            'key'      => null,
+            'duration' => null,
+            'distance' => null,
+            'delay'    => [],
         ];
         foreach ($sequences as $key => $sequence) {
             if (empty($sequence)) {
@@ -126,33 +97,27 @@ class Strategy
                 }
             }
 
-            $duration = 0;
-            $distance = 0;
+            $cost = [
+                'duration' => 0,
+                'distance' => 0,
+            ];
 
             // vehicle to the 1st point
             $vehicle_to_1st_point = self::$sub_section_distances['vehicle_' . $vehicle_index][$sequence[0]];
-            $duration += $vehicle_to_1st_point->duration;
-            $distance += $vehicle_to_1st_point->distance;
+            $cost['duration'] += $vehicle_to_1st_point->duration;
+            $cost['distance'] += $vehicle_to_1st_point->distance;
 
             $cnt = count($sequence);
             for ($i = 0; $i < $cnt - 1; $i++) {
                 $sub_distance = self::$sub_section_distances[$sequence[$i]][$sequence[$i + 1]];
-                $duration += $sub_distance->duration;
-                $distance += $sub_distance->distance;
+                $cost['duration'] += $sub_distance->duration;
+                $cost['distance'] += $sub_distance->distance;
             }
-            if (!isset($min['duration']['duration']) || $duration < $min['duration']['duration']) {
-                $min['duration'] = [
+            if (!isset($min['key']) || $cost[$criteria] < $min[$criteria]) {
+                $min = [
                     'key'      => $key,
-                    'duration' => $duration,
-                    'distance' => $distance,
-                    'delay'    => self::getDelay($actual_cost),
-                ];
-            }
-            if (!isset($min['distance']['distance']) || $distance < $min['distance']['distance']) {
-                $min['distance'] = [
-                    'key'      => $key,
-                    'duration' => $duration,
-                    'distance' => $distance,
+                    'duration' => $cost['duration'],
+                    'distance' => $cost['distance'],
                     'delay'    => self::getDelay($actual_cost),
                 ];
             }

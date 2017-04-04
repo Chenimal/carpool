@@ -226,6 +226,7 @@ function initMap() {
         var position = original_vehicle_locations[k];
         return [position.lng, position.lat];
       }),
+      criteria: assign_criteria,
       conditions: restrictions
     };
     return $.ajax({
@@ -236,7 +237,7 @@ function initMap() {
     }).done(function(solution) {
       has_assigned = true;
       console.log('Assign:', solution);
-      var sequence = solution[assign_criteria]['sequence'];
+      var sequence = solution['sequence'];
       ['a', 'b'].map(function(k) {
         var v = k == 'a' ? 0 : 1;
         insertSequenceInfo(sequence[v], k);
@@ -290,7 +291,7 @@ function initMap() {
           });
         }
       });
-      insertDelayInfo(solution[assign_criteria]['delay']);
+      insertDelayInfo(solution['delay']);
     }).fail(function() {
       alert('Oops... Somthing went wrong :( \nTry refreshing the page.');
     });
