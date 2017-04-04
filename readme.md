@@ -141,7 +141,7 @@ Then calculate all sequences' durations&distances and select least cost one(Cons
 
 ---
 
-### 3. Testing(todo)
+### 3. Testing
 
 - Create random order *(170 ms on average)*:
 
