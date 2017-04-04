@@ -1,5 +1,4 @@
-var base_url = 'http://carpool.lalamove.com/',
-  order_colors = [
+var order_colors = [
     ['blue', '#38aadd'],
     ['orange', '#f69730'],
     ['green', '#72b026'],
@@ -103,7 +102,7 @@ function initMap() {
    */
   function createOrder() {
     return $.ajax({
-      url: base_url + 'orders/create-random',
+      url: '/orders/create-random',
       dataType: 'jsonp',
       jsonp: 'jsonp',
     }).done(function(res) {
@@ -170,7 +169,7 @@ function initMap() {
    */
   function getVehicles() {
     return $.ajax({
-      url: base_url + 'vehicles/random',
+      url: '/vehicles/random',
       dataType: 'jsonp',
       jsonp: 'jsonp',
     }).done(function(data) {
@@ -232,7 +231,7 @@ function initMap() {
       conditions: restrictions
     };
     return $.ajax({
-      url: base_url + 'orders/assign',
+      url: '/orders/assign',
       dataType: 'jsonp',
       jsonp: 'jsonp',
       data: data
@@ -340,7 +339,7 @@ function initMap() {
     var remain = order_ids.length;
     for (var i = 0; i < num; i++) {
       $.ajax({
-        url: base_url + 'orders/finish/' + order_ids[i],
+        url: '/orders/finish/' + order_ids[i],
         dataType: 'jsonp',
         jsonp: 'jsonp',
       }).done(function() {
