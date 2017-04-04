@@ -3,10 +3,11 @@
 class CreateOrderTest extends TestCase
 {
     private $loop = 100;
+    private $url  = 'orders/create-random';
 
     public function testSingleRequest()
     {
-        $response = $this->call('GET', 'orders/create-random');
+        $response = $this->call('GET', $this->url);
 
         $this->assertEquals(
             200, $response->status()
@@ -22,7 +23,7 @@ class CreateOrderTest extends TestCase
 
         $i = 0;
         while ($i < $this->loop) {
-            $response = $this->call('GET', 'orders/create-random')
+            $response = $this->call('GET', $this->url)
                 ->getData();
 
             if (!isset($service_types[$response->service_type])) {

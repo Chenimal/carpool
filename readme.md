@@ -143,12 +143,12 @@ Then calculate all sequences' durations&distances and select least cost one(Cons
 
 ### 3. Testing(todo)
 
-- Create random order(170 ms on average):
+- Create random order *(170 ms on average)*:
 
 `phpunit tests/CreateOrderTest.php --filter testSingleRequest`
 `phpunit tests/CreateOrderTest.php --filter testMultiRequests`
 
-- Get vehicles(10 ms on average);
+- Get vehicles *(40 ms on average)*;
 
 `phpunit tests/GetVehiclesTest.php --filter testSingleRequest`
 `phpunit tests/GetVehiclesTest.php --filter testMultiRequests`

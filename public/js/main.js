@@ -315,7 +315,7 @@ function initMap() {
    */
   function insertDelayInfo(data) {
     Object.keys(data).map(function(order_id) {
-      $('.delay_td_' + order_id).text('' + (data[order_id] / 60) + ' mins');
+      $('.delay_td_' + order_id).text('' + Math.max(0, data[order_id] / 60) + ' mins');
     });
   }
 

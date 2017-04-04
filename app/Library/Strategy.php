@@ -17,10 +17,13 @@ class Strategy
      * @param  array $vehicles
      * @return 0 or 1 (vehicle index)
      */
-    public static function basic($order_ids, $vehicles, $criteria = 'duration', $conditions = null)
+    public static function basic($order_ids, $vehicles, $criteria, $conditions = null)
     {
         if (empty($order_ids) || count($vehicles) !== 2) {
-            return;
+            return false;
+        }
+        if (empty($criteria)) {
+            $criteria = 'duration';
         }
         // get all sub-section distances from map api (高德地图),
         self::subSectionDistances($order_ids, $vehicles);
@@ -76,7 +79,7 @@ class Strategy
      * @param  int 0 or 1, vehicle index
      * @return array min
      */
-    protected static function bestSequence($sequences, $vehicle_index, $criteria = "duration", $conditions = null)
+    protected static function bestSequence($sequences, $vehicle_index, $criteria, $conditions = null)
     {
         $min = [
             'key'      => null,
@@ -89,7 +92,7 @@ class Strategy
                 continue;
             }
 
-            $actual_cost = self::actualCost($sequence, $conditions);
+            $actual_cost = self::actualCost($sequence);
             if (!empty($conditions)) {
                 $meet_conditions = self::checkCondition($actual_cost, $conditions);
                 if (!$meet_conditions) {
@@ -143,13 +146,12 @@ class Strategy
     /**
      * get the actual cost duration/distance of each order in this sequence
      * @param  array $sequence
-     * @param  array $conditions
      * @return array [order_id=>cost,...]
      */
-    protected static function actualCost($sequence, $conditions)
+    protected static function actualCost($sequence)
     {
-        if (empty($conditions)) {
-            return true;
+        if (empty($sequence)) {
+            return [];
         }
 
         list($order_id, $position) = explode('_', $sequence[0]);

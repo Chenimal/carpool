@@ -57,8 +57,14 @@ class OrdersController extends Controller
      */
     public function assign(Request $request)
     {
-        $order_ids  = $request->input('order_ids');
-        $vehicles   = $request->input('vehicles');
+        $order_ids = $request->input('order_ids');
+        if (!is_array($order_ids) || empty($order_ids) || count($order_ids) > 5) {
+            throw new \Exception('assignment take 1~5 orders');
+        }
+        $vehicles = $request->input('vehicles');
+        if (empty($vehicles) || count($vehicles) != 2) {
+            throw new \Exception('assignment take two vehicles');
+        }
         $criteria   = $request->input('criteria');
         $conditions = $request->input('conditions');
 
