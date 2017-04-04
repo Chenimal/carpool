@@ -32,7 +32,7 @@ function initMap() {
     removeOrders();
     removePassedLine();
     $('.order_tr').remove();
-    var num_orders = 2; //Math.ceil(Math.random() * 5);
+    var num_orders = 5; //Math.ceil(Math.random() * 5);
     createOrders(num_orders).done(function() {
       has_orders = true;
       $('.create_orders, .get_vehicles').prop('disabled', false);
@@ -102,19 +102,27 @@ function initMap() {
       console.log('Order:', res);
       insertTableOrder(res);
       AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
+        var color = order_colors[cur_order_color % 5];
         var start = new SimpleMarker({
           iconLabel: 'S',
-          iconStyle: order_colors[cur_order_color % 5],
+          iconStyle: color,
           map: map,
           position: res.pickup_lng_lat
         });
         var end = new SimpleMarker({
           iconLabel: 'E',
-          iconStyle: order_colors[cur_order_color++ % 5],
+          iconStyle: color,
           map: map,
           position: res.dropoff_lng_lat
         });
-        orders[res.id] = [start, end];
+        orders[res.id] = {
+          delivery_time: res.delivery_time,
+          pickup_time: res.pickup_time,
+          start: start,
+          end: end,
+          color: color
+        };
+        cur_order_color++;
       });
     }).fail(function(err, b) {
       alert('Oops... Somthing went wrong :( \nTry refreshing the page.');
@@ -233,7 +241,7 @@ function initMap() {
         line_arr[k].push(original_vehicle_locations[k]);
         for (var i = 0; i < sequence[v].length; i++) {
           var index = sequence[v][i].split('_');
-          line_arr[k].push(orders[index[0]][index[1] == 'start' ? 0 : 1].getPosition());
+          line_arr[k].push(orders[index[0]][index[1]].getPosition());
         }
         console.log('Assigned to ' + k + ': ', line_arr[k]);
         // draw path
@@ -297,8 +305,8 @@ function initMap() {
    */
   function removeOrders() {
     Object.keys(orders).map(function(k) {
-      orders[k][0].setMap(null);
-      orders[k][1].setMap(null);
+      orders[k]['start'].setMap(null);
+      orders[k]['end'].setMap(null);
     });
     has_orders = false;
     orders = {};
