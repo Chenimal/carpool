@@ -1,5 +1,11 @@
 var base_url = 'http://carpool.lalamove.com/',
-  order_colors = ['blue', 'orange', 'green', 'red', 'orchid'],
+  order_colors = [
+    ['blue', '#38aadd'],
+    ['orange', '#f69730'],
+    ['green', '#72b026'],
+    ['red', '#d33d29'],
+    ['orchid', '#d252b9'],
+  ],
   cur_order_color = 0,
   line_colors = {
     'a': '#F00',
@@ -100,28 +106,25 @@ function initMap() {
       jsonp: 'jsonp',
     }).done(function(res) {
       console.log('Order:', res);
-      insertTableOrder(res);
       AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
         var color = order_colors[cur_order_color % 5];
         var start = new SimpleMarker({
           iconLabel: 'S',
-          iconStyle: color,
+          iconStyle: color[0],
           map: map,
           position: res.pickup_lng_lat
         });
         var end = new SimpleMarker({
           iconLabel: 'E',
-          iconStyle: color,
+          iconStyle: color[0],
           map: map,
           position: res.dropoff_lng_lat
         });
-        orders[res.id] = {
-          delivery_time: res.delivery_time,
-          pickup_time: res.pickup_time,
-          start: start,
-          end: end,
-          color: color
-        };
+        orders[res.id] = res;
+        orders[res.id]['start'] = start;
+        orders[res.id]['end'] = end;
+        orders[res.id]['color'] = color[1];
+        insertTableOrder(orders[res.id]);
         cur_order_color++;
       });
     }).fail(function(err, b) {
@@ -133,7 +136,7 @@ function initMap() {
    */
   function insertTableOrder(data) {
     $('.order_table').removeClass('hide');
-    $('.order_table tbody').append("<tr class='order_tr info'><th>" + data.id + "</th><td>" +
+    $('.order_table tbody').append("<tr class='order_tr info'><th><span style='background-color:" + data.color + "'>&nbsp;&nbsp;&nbsp;&nbsp;</span></th><td>" +
       data.service_type + "</td><td>" +
       data.pickup_time + "<br>[" + data.pickup_lng_lat.map(function(s) {
         return Number(s).toFixed(8);
@@ -296,7 +299,10 @@ function initMap() {
    * insert sequence data into vehicle table
    */
   function insertTableVehicleWithSequence(data, k) {
-    var str_sequence = data.join(' -> ', data);
+    var str_sequence = data.map(function(elt) {
+      var index = elt.split('_');
+      return "<span style='background-color:" + orders[index[0]]['color'] + "'> " + index[1] + " </span>";
+    }).join(' -> ', data);
     $('.sequence_td_' + k).empty().append(str_sequence);
   }
 
