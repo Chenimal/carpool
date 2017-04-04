@@ -81,6 +81,7 @@ function math_combination($arr, $num)
     - n=5: C<sub>5</sub><sup>2</sup> + C<sub>5</sub><sup>3</sup> = 20
 
     Thus it has:
+
     ![](doc/combination_fomula.png)
 
     Code implementation: `app/Library/Strategy.php:`
