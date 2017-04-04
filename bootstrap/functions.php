@@ -12,8 +12,9 @@ function math_combination($arr, $num)
     if ($num == 0) {
         return [[]];
     }
+    $cnt    = count($arr);
     $result = [];
-    for ($i = 0; $i < count($arr); $i++) {
+    for ($i = 0; $i < $cnt; $i++) {
         $subs = math_combination(array_slice($arr, $i + 1), $num - 1);
         foreach ($subs as $s) {
             $result[] = array_merge([$arr[$i]], $s);

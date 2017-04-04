@@ -2,7 +2,7 @@
 
 ### 1. Introduction
 
-Click <a href="http://47.52.30.33/index.html" target="_blank">here</a> to view the demo. The source code is available to download [here](github download link).
+Click <a href="http://47.52.30.33/index.html" target="_blank">here</a> to view the demo. The source code is available to download [here](https://www.github.com/Chenimal/carpool/archive/master.zip).
 
 #### 1.1 Steps to run
 
@@ -36,7 +36,7 @@ The basic idea is:
 
 ---
 
-### 2. Algotithm Explainations(todo)
+### 2. Algotithm Explainations
 
 #### 2.1 Creating random orders
 
@@ -47,12 +47,60 @@ I use RayCasting method: cast a ray from the point, count the num of intersectio
 See code implementation in `app/Library/Location.php:createRandomAccessibleLocation`.
 ![](doc/raycast.png)
 
-#### 2.2 Split orders(todo)
+#### 2.2 Split orders
 
-The problem of spliting n orders into two subsets is equivalent to putting n balls into two boxes. Note each box could contain up to 3 balls. If n > 3(n=4,5), each box must contain at least n-3 balls.
-Thus it has 求和 combinations.
+* **2.2.1** The problem of spliting n orders into two subsets is equivalent to putting n balls into two boxes.
 
-Code implementation: `app/bootstrap/functions.php:math_combination`
+    Code implementation: `app/bootstrap/functions.php:math_combination`
+```PHP
+function math_combination($arr, $num)
+{
+    if ($num == 0) {
+        return [[]];
+    }
+    $cnt    = count($arr);
+    $result = [];
+    for ($i = 0; $i < $cnt; $i++) {
+        $subs = math_combination(array_slice($arr, $i + 1), $num - 1);
+        foreach ($subs as $s) {
+            $result[] = array_merge([$arr[$i]], $s);
+        }
+    }
+    return $result;
+}
+```
+
+* **2.2.2** Note each box could contain up to 3 balls. If n > 3(n=4,5), each box must contain at least n-3 balls.
+
+    Number of combinations:
+
+    - n=1: C<sub>1</sub><sup>0</sup> + C<sub>1</sub><sup>1</sup> = 2
+    - n=2: C<sub>2</sub><sup>0</sup> + C<sub>2</sub><sup>1</sup> + C<sub>2</sub><sup>2</sup> = 4
+    - n=3: C<sub>3</sub><sup>0</sup> + C<sub>3</sub><sup>1</sup> + C<sub>3</sub><sup>2</sup> + C<sub>3</sub><sup>3</sup>= 8
+    - n=4: C<sub>4</sub><sup>1</sup> + C<sub>4</sub><sup>2</sup> + C<sub>4</sub><sup>3</sup>= 14
+    - n=5: C<sub>5</sub><sup>2</sup> + C<sub>5</sub><sup>3</sup> = 20
+
+    Thus it has:
+    ![](doc/combination_fomula.png)
+
+    Code implementation: `app/Library/Strategy.php:`
+```PHP
+protected static function splits($order_ids)
+{
+    // maximum&minimum number of orders a vehicle could have at a time
+    $max_num_orders = min(3, count($order_ids));
+    $min_num_orders = max(0, count($order_ids) - $max_num_orders);
+
+    $splits = [];
+    for ($i = $min_num_orders; $i <= $max_num_orders; $i++) {
+        $splits_vehicle_a = math_combination($order_ids, $i);
+        foreach ($splits_vehicle_a as $combination_a) {
+            $splits[] = [$combination_a, array_diff($order_ids, $combination_a)];
+        }
+    }
+    return $splits;
+}
+```
 
 #### 2.3 To find all sequences
 
