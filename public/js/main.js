@@ -69,6 +69,8 @@ function initMap() {
     removeVehicles();
     removePassedLine();
     map.clearMap();
+    $('.order_table').addClass('hide');
+    $('.vehicle_table').addClass('hide');
   });
   $('.criteria').on('change', function() {
     assign_criteria = $(this).filter(':checked').val();
@@ -120,7 +122,6 @@ function initMap() {
   }
   /**
    * insert order data into table
-   * @return {[type]} [description]
    */
   function insertTableOrder(data) {
     $('.order_table').removeClass('hide');
@@ -192,16 +193,15 @@ function initMap() {
   }
 
   /**
-   * insert order data into table
-   * @return {[type]} [description]
+   * insert vehicle data into table
    */
   function insertTableVehicle(data) {
     $('.vehicle_table').removeClass('hide');
     Object.keys(data).map(function(k) {
-      $('.vehicle_table tbody').append("<tr class='vehicle_tr success'><th>" + k + "</th><td>" +
+      $('.vehicle_table tbody').append("<tr class='vehicle_tr success'><th>V" + k + "</th><td>" +
         "[" + data[k].map(function(s) {
           return Number(s).toFixed(8);
-        }) + "]</td><td></td></tr>");
+        }).join(',<br>') + "]</td><td class='sequence_td_" + k + "'></td></tr>");
     });
   }
 
@@ -228,6 +228,7 @@ function initMap() {
       var sequence = solution[assign_criteria]['sequence'];
       ['a', 'b'].map(function(k) {
         var v = k == 'a' ? 0 : 1;
+        insertTableVehicleWithSequence(sequence[v], k);
         line_arr[k] = [];
         line_arr[k].push(original_vehicle_locations[k]);
         for (var i = 0; i < sequence[v].length; i++) {
@@ -281,6 +282,14 @@ function initMap() {
     }).fail(function() {
       alert('Oops... Somthing went wrong :( \nTry refreshing the page.');
     });
+  }
+
+  /**
+   * insert sequence data into vehicle table
+   */
+  function insertTableVehicleWithSequence(data, k) {
+    var str_sequence = data.join(' -> ', data);
+    $('.sequence_td_' + k).empty().append(str_sequence);
   }
 
   /**
