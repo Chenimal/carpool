@@ -2,11 +2,16 @@
 
 namespace App\Library;
 
+use DB;
+
 /**
  * location service
  */
 class Location
 {
+    private static $key;
+    private static $num_available_keys = 4;
+
     /**
      * createRandomAccessibleLocation
      * @return array[lng, lat]
@@ -65,14 +70,23 @@ class Location
     public static function distance($origins, $destination)
     {
         $map = config('app.map');
+        $key = self::getKey();
 
         $origins_str = [];
         foreach ($origins as $origin) {
             $origins_str[] = implode(',', $origin);
         }
-        $url    = $map['base_url'] . 'distance?key=' . $map['key'] . '&origins=' . implode('|', $origins_str) . "&destination=" . implode(',', $destination);
-        $result = self::curlGet($url);
-        return $result->results;
+
+        for ($i = 0; $i < self::$num_available_keys; $i++) {
+            $url    = $map['base_url'] . 'distance?key=' . $key->key . '&origins=' . implode('|', $origins_str) . "&destination=" . implode(',', $destination);
+            $result = self::curlGet($url);
+            if ($result->info == 'DAILY_QUERY_OVER_LIMIT') {
+                $key = self::updateKey();
+                continue;
+            }
+            return $result->results;
+        }
+        throw new \Exception('The Gaode map api reached the limitation. Please contact me.');
     }
 
     /**
@@ -138,5 +152,41 @@ class Location
         $result = curl_getinfo($ch);
         curl_close($ch);
         return json_decode($response);
+    }
+
+    /**
+     * get map api key
+     * @return string
+     */
+    protected static function getKey()
+    {
+        if (!isset(self::$key)) {
+            self::$key = DB::table('gaode_map_keys')
+                ->where('in_use', 1)
+                ->first();
+        }
+        return self::$key;
+    }
+    /**
+     * update api key
+     * @return string
+     */
+    protected static function updateKey()
+    {
+        $new_id = (self::$key->id + 1) % self::$num_available_keys;
+        DB::table('gaode_map_keys')
+            ->where('id', '!=', $new_id)
+            ->update([
+                'in_use' => 0,
+            ]);
+        DB::table('gaode_map_keys')
+            ->where('id', $new_id)
+            ->update([
+                'in_use' => 1,
+            ]);
+        self::$key = DB::table('gaode_map_keys')
+            ->where('id', $new_id)
+            ->first();
+        return self::$key;
     }
 }
