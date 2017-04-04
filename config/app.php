@@ -2,17 +2,15 @@
 
 return [
     // server timezone
-    'timezone'                    => 'Asia/Hong_Kong',
+    'timezone'               => 'Asia/Hong_Kong',
 
     // pickup time is always end up with 0, 15, 30, 45
-    'pickup_time_interval'        => 15 * 60,
+    'pickup_time_interval'   => 15 * 60,
     // pickup_time is in the next hour: curren_time < pickup_time <= current_time + 1 hrs
-    'max_span_bt_now_pickup'      => 60 * 60,
-    // deliveryTime - pickupTime <= 6 hrs
-    'max_span_bt_pickup_delivery' => 6 * 60 * 60,
+    'max_span_bt_now_pickup' => 60 * 60,
 
     // map related
-    'map'                         => [
+    'map'                    => [
         'base_url'  => 'http://restapi.amap.com/v3/',
         'locations' => [
             'center'     => [114.127439, 22.3746645],
