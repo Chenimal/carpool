@@ -45,9 +45,9 @@ The key is making sure the random locations are on the land rather than ocean. M
 I use RayCasting method: cast a ray from the point, count the num of intersections of the ray and polygon's borders. If num is odd, it's inside; if num is even, it's outside.
 
 See code implementation in `app/Library/Location.php:createRandomAccessibleLocation`.
-[raycating picture]
+![](doc/raycast.png)
 
-#### 2.2 Split orders
+#### 2.2 Split orders(todo)
 
 The problem of spliting n orders into two subsets is equivalent to putting n balls into two boxes. Note each box could contain up to 3 balls. If n > 3(n=4,5), each box must contain at least n-3 balls.
 Thus it has 求和 combinations.
@@ -56,11 +56,14 @@ Code implementation: `app/bootstrap/functions.php:math_combination`
 
 #### 2.3 To find all sequences
 
-Given n orders, find all sequences of pickup&dropoff locations. Note for each order, the pickup location cannot after its dropoff location. Thus it has P2n,2n/(2^n) (markdwon syntax?) permutations.
+Given n orders, find all sequences of pickup&dropoff locations. Note for each order, the pickup location cannot after its dropoff location. Thus it has **P<sub>2n</sub><sup>2n</sup>/(2<sup>n</sup>)** permutations.
 
 Code implementation: `app/bootstrap/functions.php:math_sequence`
 
 #### 2.4 To find best sequence
+
+First get all sub-sections' duration&distance (`app/Library/Strategy.php:subSectionDistances`).
+Then calculate all sequences' durations&distances and select least cost one(Consider restriction& criteria).
 
 ---
 
