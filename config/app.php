@@ -14,7 +14,7 @@ return [
     // map related
     'map'                         => [
         'base_url'  => 'http://restapi.amap.com/v3/',
-        'key'       => '405cad4e8ac7edfbe67a037956ee83d6',
+        'key'       => '756fc5e6b4e8a5a2279f7dcbe4fb9d69',
         'locations' => [
             'center'     => [114.127439, 22.3746645],
             'north_east' => [114.411927, 22.558639],
