@@ -2,25 +2,25 @@
 
 ### 1. Introduction
 
-Click [here](http://47.52.30.33/index.html) to view the demo. The source code is available to download [here](github download link).
+Click <a href="http://47.52.30.33/index.html" target="_blank">here</a> to view the demo. The source code is available to download [here](github download link).
 
 #### 1.1 Steps to run
 
 To run the program, follow the steps below:
 
-1. First you need to create random orders and vehicles. Simply click 'New orders' and 'Get vehicles'. You will see some new spots showing on the map. Each order has an unique color. Label S(start) and E(end) represent pickup& deliver locations respectively. You will also see two lightgreen spots labeled Va and Vb representing two different vehicles.
+1. First you need to create random orders and vehicles. Simply click `New orders` and `Get vehicle `. You will see some new spots showing on the map. Each order has an unique color. Label S(start) and E(end) represent pickup& deliver locations respectively. You will also see two lightgreen spots labeled Va and Vb representing two different vehicles.
 
-2. Then there will be more options show up and the button 'Assign orders' should be available to click. For the first time you can just leave the options as default and click 'Assign orders'.
+2. Then there will be more options showing up, and the button `Assign orders` should be available to click. For the first time you can just leave the options as default and click `Assign orders`.
 
-3. You will see the animation starts, representing each vehicle's path.
+3. You will see the animation starts, representing each vehicle's path. Related information will also display in the table on the right side.
 
-4. Once both are stopped, you can replay the animation, or click 'Start over' button to clear the map.
+4. Once animation stopped, you could re-play the animation by clicking 'Assign orders', try other orders&vehicles combinations by clicking `New orders`/`Get vehicles`, or just click `Start over` button to clear the map.
 
-Options:
+*Options:*
 
-* Animation type: The linear one could better illustrate path's order&relationships. But in case you feel it is unreal, just select 'real route'.
-* Assign criteria: The definition of the best strategy.
-* Restrictions: Some limitations when calculating the path, considering user's experiences.
+* `Animation type`: The linear one could better illustrate path's order&relationships. But in case you feel it is unreal, just select 'real route'.
+* `Assign criteria`: The definition of the best strategy.
+* `Restrictions`: Some limitations when calculating the path, considering user's experiences.
 
 #### 1.2 Assign Strategy
 
