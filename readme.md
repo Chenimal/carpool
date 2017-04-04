@@ -59,6 +59,28 @@ Code implementation: `app/bootstrap/functions.php:math_combination`
 Given n orders, find all sequences of pickup&dropoff locations. Note for each order, the pickup location cannot after its dropoff location. Thus it has **P<sub>2n</sub><sup>2n</sup>/(2<sup>n</sup>)** permutations.
 
 Code implementation: `app/bootstrap/functions.php:math_sequence`
+```PHP
+function math_sequence($arr)
+{
+    if (count($arr) == 0) {
+        return [[]];
+    }
+    $result = [];
+    foreach ($arr as $key => $pair) {
+        $select_point = array_shift($pair);
+
+        $rest_arr = array_except($arr, $key);
+        $rest_arr = empty($pair) ? $rest_arr : array_merge($rest_arr, [$pair]);
+
+        $sub_sequences = math_sequence($rest_arr);
+        foreach ($sub_sequences as $sub) {
+            array_unshift($sub, $select_point);
+            $result[] = $sub;
+        }
+    }
+    return $result;
+}
+```
 
 #### 2.4 To find best sequence
 
