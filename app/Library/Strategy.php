@@ -100,11 +100,13 @@ class Strategy
                 'key'      => null,
                 'duration' => null,
                 'distance' => null,
+                'delay'    => [],
             ],
             'distance' => [
                 'key'      => null,
                 'duration' => null,
                 'distance' => null,
+                'delay'    => [],
             ],
         ];
         foreach ($sequences as $key => $sequence) {
@@ -112,8 +114,9 @@ class Strategy
                 continue;
             }
 
+            $actual_cost = self::actualCost($sequence, $conditions);
             if (!empty($conditions)) {
-                $meet_conditions = self::checkConditions($sequence, $conditions);
+                $meet_conditions = self::checkCondition($actual_cost, $conditions);
                 if (!$meet_conditions) {
                     continue;
                 }
@@ -152,12 +155,12 @@ class Strategy
     }
 
     /**
-     * check if the sequence meet the given condition(s)
+     * get the actual cost duration/distance of each order in this sequence
      * @param  array $sequence
      * @param  array $conditions
-     * @return boolean true or false
+     * @return array [order_id=>cost,...]
      */
-    protected static function checkConditions($sequence, $conditions)
+    protected static function actualCost($sequence, $conditions)
     {
         if (empty($conditions)) {
             return true;
@@ -165,8 +168,9 @@ class Strategy
 
         list($order_id, $position) = explode('_', $sequence[0]);
 
-        $actual_cost            = [];
-        $actual_cost[$order_id] = [
+        $actual_cost                 = [];
+        $temp_actual_cost            = [];
+        $temp_actual_cost[$order_id] = [
             'duration' => 0,
             'distance' => 0,
         ];
@@ -174,29 +178,42 @@ class Strategy
         for ($i = 1; $i < $length; $i++) {
 
             $sub_distance = self::$sub_section_distances[$sequence[$i - 1]][$sequence[$i]];
-            foreach ($actual_cost as $o_id => $oc) {
-                $actual_cost[$o_id]['duration'] += $sub_distance->duration;
-                $actual_cost[$o_id]['distance'] += $sub_distance->distance;
+            foreach ($temp_actual_cost as $o_id => $oc) {
+                $temp_actual_cost[$o_id]['duration'] += $sub_distance->duration;
+                $temp_actual_cost[$o_id]['distance'] += $sub_distance->distance;
             }
 
             list($order_id, $position) = explode('_', $sequence[$i]);
             if ($position == 'start') {
-                $actual_cost[$order_id] = [
+                $temp_actual_cost[$order_id] = [
                     'duration' => 0,
                     'distance' => 0,
                 ];
             }
             // end
             else {
-                $single_transit_cost = self::$sub_section_distances[$order_id . '_start'][$order_id . '_end'];
+                $actual_cost[$order_id] = $temp_actual_cost[$order_id];
+                unset($temp_actual_cost[$order_id]);
+            }
+        }
+        return $actual_cost;
+    }
 
-                if (in_array('duration', $conditions) && $actual_cost[$order_id]['duration'] > 2 * $single_transit_cost->duration) {
-                    return false;
-                }
-                if (in_array('distance', $conditions) && $actual_cost[$order_id]['distance'] > 2 * $single_transit_cost->distance) {
-                    return false;
-                }
-                unset($actual_cost[$order_id]);
+    /**
+     * check if the sequence meet the given condition(s)
+     * @param  array $actual_cost
+     * @param  array $conditions
+     * @return boolean true or false
+     */
+    protected static function checkCondition($actual_cost, $conditions)
+    {
+        foreach ($actual_cost as $order_id => $cost) {
+            $single_transit_cost = self::$sub_section_distances[$order_id . '_start'][$order_id . '_end'];
+            if (in_array('duration', $conditions) && $actual_cost[$order_id]['duration'] > 2 * $single_transit_cost->duration) {
+                return false;
+            }
+            if (in_array('distance', $conditions) && $actual_cost[$order_id]['distance'] > 2 * $single_transit_cost->distance) {
+                return false;
             }
         }
         return true;

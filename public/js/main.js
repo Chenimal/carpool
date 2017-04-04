@@ -138,12 +138,12 @@ function initMap() {
     $('.order_table').removeClass('hide');
     $('.order_table tbody').append("<tr class='order_tr info'><th><span style='background-color:" + data.color + "'>&nbsp;&nbsp;&nbsp;&nbsp;</span></th><td>" +
       data.service_type + "</td><td>" +
-      data.pickup_time + "<br>[" + data.pickup_lng_lat.map(function(s) {
+      data.pickup_time + "<br><span style='font-size:10px'>[" + data.pickup_lng_lat.map(function(s) {
         return Number(s).toFixed(8);
-      }) + "]</td><td>" +
-      data.delivery_time + "<br>[" + data.dropoff_lng_lat.map(function(s) {
+      }) + "]</span></td><td>" +
+      data.delivery_time + "<br><span style='font-size:10px'>[" + data.dropoff_lng_lat.map(function(s) {
         return Number(s).toFixed(8);
-      }) + "]</td></tr>");
+      }) + "]</span></td><td class='delay_td_" + data.id + "'></td></tr>");
   }
 
   /**
