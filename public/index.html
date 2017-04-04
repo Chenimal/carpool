@@ -100,11 +100,21 @@
                 <h5>Restrictions</h5>
                 <div class="checkbox">
                    <label><input type="checkbox" name="restrictions" class="restrictions" value="duration" checked>Duration of each order cannot exceed
-                    2 times of its single transit</label>
+                    <select class="restrict_value_duration restriction_values" size=1>
+                      <option value="1.2">1.2</option>
+                      <option value="1.5" selected>1.5</option>
+                      <option value="2">2.0</option>
+                    </select>
+                    times of its single transit</label>
                 </div>
                 <div class="checkbox">
                    <label><input type="checkbox" name="restirctions" class="restrictions" value="distance" checked>Distance of each order cannot exceed
-                    2 times of its single transit</label>
+                    <select class="restrict_value_distance restriction_values" size=1>
+                      <option value="1.2">1.2</option>
+                      <option value="1.5" selected>1.5</option>
+                      <option value="2">2.0</option>
+                    </select>
+                    times of its single transit</label>
                 </div>
               </div>
             </div>

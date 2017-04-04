@@ -195,10 +195,10 @@ class Strategy
     {
         foreach ($actual_cost as $order_id => $cost) {
             $single_transit_cost = self::$sub_section_distances[$order_id . '_start'][$order_id . '_end'];
-            if (in_array('duration', $conditions) && $actual_cost[$order_id]['duration'] > 2 * $single_transit_cost->duration) {
+            if (isset($conditions['duration']) && $actual_cost[$order_id]['duration'] > $conditions['duration'] * $single_transit_cost->duration) {
                 return false;
             }
-            if (in_array('distance', $conditions) && $actual_cost[$order_id]['distance'] > 2 * $single_transit_cost->distance) {
+            if (isset($conditions['distance']) && $actual_cost[$order_id]['distance'] > $conditions['distance'] * $single_transit_cost->distance) {
                 return false;
             }
         }

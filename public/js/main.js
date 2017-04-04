@@ -22,7 +22,10 @@ var base_url = 'http://carpool.lalamove.com/',
   real_routes = {},
   passed_polyline = {},
   assign_criteria = 'duration',
-  restrictions = ['duration', 'distance'],
+  restrictions = {
+    duration: 1.5,
+    distance: 1.5
+  },
   animation_type = 'linear';
 
 function initMap() {
@@ -84,12 +87,11 @@ function initMap() {
   $('.animation_type').on('change', function() {
     animation_type = $(this).filter(':checked').val();
   });
-  $('.restrictions').on('change', function() {
-    restrictions = [];
+  $('.restrictions, .restriction_values').on('change', function() {
+    restrictions = {};
     $('.restrictions:checked').each(function() {
-      restrictions.push($(this).val());
+      restrictions[$(this).val()] = $('.restrict_value_' + $(this).val()).val();
     });
-    console.log(restrictions);
   });
 
   /*********************************

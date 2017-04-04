@@ -20,7 +20,7 @@ To run the program, follow the steps below:
 
 * `Animation type`: The linear one could better illustrate path's order&relationships. But in case you feel it is unreal, just select 'real route'.
 * `Assign criteria`: The definition of the best strategy.
-* `Restrictions`: Some limitations when calculating the path, considering user's experiences.
+* `Restrictions`:  Limitations when calculating the path, considering user's experiences. e.g. if set duration restriction=1.2, and an order takes 10 minutes on single transit, then the order in carpool transit cannot exceed 12 minutes.
 
 #### 1.2 Assign Strategy
 
