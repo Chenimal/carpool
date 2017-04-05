@@ -1,9 +1,9 @@
 var order_colors = [
-    ['blue', '#38aadd'],
-    ['orange', '#f69730'],
-    ['green', '#72b026'],
-    ['red', '#d33d29'],
-    ['orchid', '#d252b9'],
+    '#d33d29',
+    '#f69730',
+    '#72b026',
+    '#38aadd',
+    '#d252b9',
   ],
   cur_order_color = 0,
   line_colors = {
@@ -107,27 +107,32 @@ function initMap() {
       jsonp: 'jsonp',
     }).done(function(res) {
       console.log('Order:', res);
-      AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
-        var color = order_colors[cur_order_color % 5];
-        var start = new SimpleMarker({
-          iconLabel: 'S',
-          iconStyle: color[0],
-          map: map,
-          position: res.pickup_lng_lat
-        });
-        var end = new SimpleMarker({
-          iconLabel: 'E',
-          iconStyle: color[0],
-          map: map,
-          position: res.dropoff_lng_lat
-        });
-        orders[res.id] = res;
-        orders[res.id]['start'] = start;
-        orders[res.id]['end'] = end;
-        orders[res.id]['color'] = color[1];
-        insertTableOrder(orders[res.id]);
-        cur_order_color++;
+      var start = new AMap.Marker({
+        map: map,
+        icon: new AMap.Icon({
+          image: '/imgs/mbg-fs8.png',
+          imageOffset: new AMap.Pixel(-36 * cur_order_color, 0),
+          size: new AMap.Size(36, 46)
+        }),
+        offset: new AMap.Pixel(-15, -44),
+        position: res.pickup_lng_lat
       });
+      var end = new AMap.Marker({
+        map: map,
+        icon: new AMap.Icon({
+          image: '/imgs/mbg-fs8.png',
+          imageOffset: new AMap.Pixel(-36 * cur_order_color, -46),
+          size: new AMap.Size(36, 46)
+        }),
+        offset: new AMap.Pixel(-15, -44),
+        position: res.dropoff_lng_lat
+      });
+      orders[res.id] = res;
+      orders[res.id]['start'] = start;
+      orders[res.id]['end'] = end;
+      orders[res.id]['color'] = order_colors[cur_order_color % 5];
+      insertTableOrder(orders[res.id]);
+      cur_order_color = (cur_order_color + 1) % 5;
     }).fail(function(err, b) {
       alert('Oops... Somthing went wrong :( \nTry refreshing the page.');
     });
@@ -175,28 +180,30 @@ function initMap() {
     }).done(function(data) {
       console.log('Vehicles:', data);
       insertTableVehicle(data);
-      return AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
-        Object.keys(data).map(function(k) {
-          vehicles[k] = new SimpleMarker({
-            iconLabel: 'V' + k,
-            iconStyle: 'lightgreen',
-            map: map,
-            position: data[k]
-          });
-          original_vehicle_locations[k] = vehicles[k].getPosition();
-          vehicles[k].on('moving', function(e) {
-            passed_polyline[k].setPath(e.passedPath);
-          });
-          vehicles[k].on('moveend', function(e) {
-            var xl = animation_type == 'linear' ? line_arr : real_routes;
-            if (vehicles[k].getPosition() == xl[k][xl[k].length - 1]) {
-              is_moving--;
-              if (is_moving <= 0) {
-                btns.prop('disabled', false);
-                $('.control_options').removeClass('hide');
-              }
+      Object.keys(data).map(function(k) {
+        vehicles[k] = new AMap.Marker({
+          map: map,
+          icon: new AMap.Icon({
+            image: '/imgs/mbg-fs8.png',
+            imageOffset: new AMap.Pixel(-36 * 12, k == 'a' ? 0 : -46),
+            size: new AMap.Size(36, 46)
+          }),
+          offset: new AMap.Pixel(-15, -44),
+          position: data[k]
+        });
+        original_vehicle_locations[k] = vehicles[k].getPosition();
+        vehicles[k].on('moving', function(e) {
+          passed_polyline[k].setPath(e.passedPath);
+        });
+        vehicles[k].on('moveend', function(e) {
+          var xl = animation_type == 'linear' ? line_arr : real_routes;
+          if (vehicles[k].getPosition() == xl[k][xl[k].length - 1]) {
+            is_moving--;
+            if (is_moving <= 0) {
+              btns.prop('disabled', false);
+              $('.control_options').removeClass('hide');
             }
-          });
+          }
         });
       });
     }).fail(function() {
