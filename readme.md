@@ -183,3 +183,11 @@ Then calculate all sequences' durations&distances and select least cost one(Cons
     * Gaode map Api(高德地图)
     * jQuery &Bootstrap
     * Server: Ubuntu 16.x(Ali cloud server)
+
+---
+
+### 6. Log
+
+- 1.0.1 (04.05.2017)
+
+    * Fixed bug: When visiting the demo page at the first time, AMap.UI plugin is loaded incorrectly. Make own icons instead of using UI plugin.
