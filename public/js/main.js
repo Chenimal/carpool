@@ -31,6 +31,7 @@ function initMap() {
   var btns = $('.btn');
   var map = new AMap.Map('container', {
     center: [114.127439, 22.3746645],
+    mapStyle: 'fresh',
     zoom: 10
   });
 
