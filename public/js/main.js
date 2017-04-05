@@ -130,7 +130,7 @@ function initMap() {
       orders[res.id] = res;
       orders[res.id]['start'] = start;
       orders[res.id]['end'] = end;
-      orders[res.id]['color'] = order_colors[cur_order_color % 5];
+      orders[res.id]['color'] = order_colors[cur_order_color];
       insertTableOrder(orders[res.id]);
       cur_order_color = (cur_order_color + 1) % 5;
     }).fail(function(err, b) {
