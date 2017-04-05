@@ -15,7 +15,7 @@ class Strategy
      * basic strategy
      * @param  array $orders
      * @param  array $vehicles
-     * @return 0 or 1 (vehicle index)
+     * @return array $solution
      */
     public static function basic($order_ids, $vehicles, $criteria, $conditions = null)
     {
@@ -77,7 +77,7 @@ class Strategy
      * find out the shortest sequence from given sequences
      * @param  array $sequences
      * @param  int 0 or 1, vehicle index
-     * @return array min
+     * @return array $sequence
      */
     protected static function bestSequence($sequences, $vehicle_index, $criteria, $conditions = null)
     {
