@@ -179,7 +179,7 @@ Then calculate all sequences' durations&distances and select least cost one(Cons
 
     * PHP 5.6
     * Lumen 5.4
-    * Mysql
+    * Mysql 5.7
     * Gaode map Api(高德地图)
     * jQuery &Bootstrap
     * Server: Ubuntu 16.x(Ali cloud server)
