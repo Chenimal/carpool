@@ -2,8 +2,6 @@
 
 ### 1. Introduction
 
-Click <a href="http://47.52.30.33/index.html" target="_blank">here</a> to view the demo. The source code is available to download [here](https://www.github.com/Chenimal/carpool/archive/master.zip).
-
 #### 1.1 Steps to run
 
 To run the program, follow the steps below:
