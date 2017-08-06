@@ -1,6 +1,5 @@
 /vendor
 /.idea
-/doc/*.pdf
 Homestead.json
 Homestead.yaml
 .env
